@@ -18,7 +18,7 @@ app.post('/', async (req, res) => {
         await category.save();
         res.send({ success: true, category });
     } catch (error) {
-        res.send({ success: false, error });
+        res.sendi({ success: false, error });
     }
 });
 
