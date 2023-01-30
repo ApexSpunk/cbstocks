@@ -15,7 +15,7 @@ app.use('/job', jobRoute);
 
 
 app.get('/', (req, res) => {
-    res.send({ 'mock13': 'Hello World!' });
+    res.send({ message: 'Welcome to cbstocks' });
 });
 
 
