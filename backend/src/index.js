@@ -15,6 +15,11 @@ app.get('/', (req, res) => {
     res.send({ message: 'Welcome to cbstocks' });
 });
 
+app.get('/test', (req, res) => {
+    res.send({ message: 'Welcome to cbstocks' });
+});
+
+
 
 app.listen(PORT, async () => {
     await connect()
