@@ -9,6 +9,7 @@ const categoryRoute = require('./routes/category.route');
 const app = express();
 app.use(express.json());
 app.use(cors());
+app.use('/category', categoryRoute);
 
 app.get('/', (req, res) => {
     res.send({ message: 'Welcome to cbstocks' });
