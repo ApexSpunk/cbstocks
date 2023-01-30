@@ -31,6 +31,17 @@ app.post('/upload', upload.array('images'), async (req, res) => {
     }
 });
 
+app.post('/like/:id', async (req, res) => {
+    const { id } = req.params;
+    try {
+        const image = await Image.findByIdAndUpdate(id, { $inc: { likes: 1 } }, { new: true });
+        res.send({ success: true, image });
+    } catch (error) {
+        res.send({ success: false, error });
+    }
+});
+
+
 
 app.patch('/:id', async (req, res) => {
     const { id } = req.params;
