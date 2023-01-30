@@ -7,6 +7,7 @@ const imageSchema = new mongoose.Schema({
     downloads: { type: Number, default: 0 },
     views: { type: Number, default: 0 },
     category: { type: mongoose.Schema.Types.ObjectId, ref: 'Category' },
+    colors: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Color' }],
     tags: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Tag' }],
 }, { timestamps: true });
 

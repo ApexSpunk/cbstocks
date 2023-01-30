@@ -16,12 +16,12 @@ app.get('/', async (req, res) => {
 });
 
 app.post('/upload', upload.array('images'), async (req, res) => {
-    const { category, tags } = req.body;
+    const { category, tags, colors } = req.body;
     const files = req.files;
     try {
         const images = files.map(file => {
             const { filename, originalname } = file;
-            const image = new Image({ name: originalname, path: filename, category, tags });
+            const image = new Image({ name: originalname, path: filename, category, tags, colors });
             image.save();
             return image;
         });
@@ -45,9 +45,9 @@ app.post('/like/:id', async (req, res) => {
 
 app.patch('/:id', async (req, res) => {
     const { id } = req.params;
-    const { name, category, tags } = req.body;
+    const { name, category, tags, colors } = req.body;
     try {
-        const image = await Image.findByIdAndUpdate(id, { name, category, tags }, { new: true });
+        const image = await Image.findByIdAndUpdate(id, { name, category, tags, colors }, { new: true });
         res.send({ success: true, image });
     } catch (error) {
         res.send({ success: false, error });
