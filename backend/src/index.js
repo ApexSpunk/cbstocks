@@ -16,7 +16,7 @@ app.get('/', (req, res) => {
 });
 
 app.get('/test', (req, res) => {
-    res.send({ message: 'Welcome to cbstocks' });
+    res.send({ message: 'Welcome to cbstockssdfds' });
 });
 
 
