@@ -23,8 +23,8 @@ app.get('/test', (req, res) => {
 
 
 
-app.listen(PORT, async () => {
-    await connect()
+app.listen(PORT, () => {
+    connect()
     console.log(`Server is running on port ${PORT}`);
 });
 
