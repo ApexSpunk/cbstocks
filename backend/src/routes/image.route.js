@@ -2,7 +2,19 @@ const express = require('express');
 const app = express.Router();
 const Image = require('../models/image');
 const multer  = require('multer');
-const upload = multer({ dest: 'uploads/' });
+// make mime type unchanged after uploading
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'uploads/')
+    },
+    filename: function (req, file, cb) {
+        cb(null, file.originalname)
+    }
+});
+const upload = multer({ storage: storage });
+
+
+
 const fs = require('fs');
 const path = require('path');
 
@@ -16,12 +28,12 @@ app.get('/', async (req, res) => {
 });
 
 app.post('/upload', upload.array('images'), async (req, res) => {
-    const { category, tags, colors } = req.body;
+    const { name, category, tags, colors } = req.body;
     const files = req.files;
     try {
         const images = files.map(file => {
             const { filename, originalname } = file;
-            const image = new Image({ name: originalname, path: filename, category, tags, colors });
+            const image = new Image({ name: name || originalname, path: filename, category, tags, colors });
             image.save();
             return image;
         });
