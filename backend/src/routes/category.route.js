@@ -16,6 +16,9 @@ const upload = multer({ storage: storage });
 app.get('/', async (req, res) => {
     try {
         const categories = await Category.find();
+        categories.map(category => {
+            category.image = `https://cb.techrapid.in/${category.image}`;
+        });
         res.send({ success: true, categories });
     } catch (error) {
         res.send({ success: false, error });

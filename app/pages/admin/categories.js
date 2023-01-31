@@ -1,4 +1,4 @@
-import { Badge, Box, Button, Flex, Grid, GridItem, Image, Input, InputGroup, InputLeftElement, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Select, Text, Textarea, useDisclosure, useToast } from '@chakra-ui/react'
+import { Badge, Box, Button, Flex, Grid, GridItem, Image, Input, InputGroup, InputLeftElement, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Select, Table, Tbody, Td, Text, Textarea, Th, Thead, Tr, useDisclosure, useToast } from '@chakra-ui/react'
 import Link from 'next/link'
 import React from 'react'
 import { FaAdjust, FaBook, FaBookMedical, FaBookReader, FaBrain, FaClock, FaEdit, FaGift, FaHeading, FaHeadSideCough, FaHome, FaImage, FaListUl, FaMoneyBill, FaTiktok, FaTimes, FaUser, FaVideo, FaVideoSlash } from 'react-icons/fa'
@@ -39,8 +39,8 @@ function images({ data }) {
             method: 'POST',
             body
         });
-        const { category } = await res.json();
-        setCategories([...categories, category]);
+        const { category: data } = await res.json();
+        setCategories([...categories, data]);
         setLoading(false);
         onClose();
         toast({
@@ -67,12 +67,12 @@ function images({ data }) {
                                             <Text fontSize='2xl' fontWeight='semibold'>Manage Categories</Text>
                                             <Button onClick={() => {
                                                 onOpen();
-                                                setCategory({ title: '', description: '', slug: '', type: 'free', image: '', totalDuration: '', videos: [{ subtitle: '', duration: '', src: '' }] })
+                                                setCategory({ name: '', image: '' });
                                                 setQuery('add')
                                             }} colorScheme='blue' size='md' ml='auto'>Add Category</Button>
                                         </Flex>
                                     </Box>
-                                    <Grid templateColumns="repeat(3, 1fr)" gap={6} mt='4'>
+                                    <Box mt='4'>
                                         {
                                             loading ? new Array(6).fill(6).map((el, index) => <GridItem colSpan={1} key={index} >
                                                 <Box borderRadius='lg' boxShadow={'md'} bg='white'>
@@ -84,45 +84,50 @@ function images({ data }) {
 
                                                     </Box>
                                                 </Box>
-                                            </GridItem>) : data?.map((category, index) =>
-                                                <GridItem colSpan={1} key={index} >
-                                                    <Box borderRadius='lg' boxShadow={'md'} bg='white'>
-                                                        <Image src={category.path} roundedTop={'lg'} h={'180px'} w='100%' objectFit='cover' />
-                                                        <Box p='4'>
-                                                            <Flex alignItems='center' justifyContent='space-between'>
-                                                                <Flex alignItems='center' gap='2'>
-                                                                    <Badge colorScheme='green' mb='2'>
-                                                                        Likes: {category.likes}
-                                                                    </Badge>
-                                                                    <Badge colorScheme='blue' mb='2'>
-                                                                        Views: {category.views}
-                                                                    </Badge>
-                                                                </Flex>
-                                                                <Badge colorScheme='orange' mb='2'>
-                                                                    Downloads: {category.downloads}
-                                                                </Badge>
-                                                            </Flex>
-                                                            <Text fontSize='md' fontWeight='semibold'>{category.name}</Text>
-                                                            <Text fontSize='sm' fontWeight='semibold' color='gray.500'>{category.category}</Text>
-
-                                                            <Flex alignItems='center' mt='4'>
-                                                                <Button colorScheme='blue' w='full' leftIcon={<FaEdit />} onClick={() => {
-                                                                    setCategory(category);
-                                                                    onOpen();
-                                                                    setQuery('update')
-                                                                }}>
-                                                                    Edit
-                                                                </Button>
-                                                                <Button colorScheme='red' w='full' ml='2' leftIcon={<DeleteIcon />}>
-                                                                    Delete
-                                                                </Button>
-                                                            </Flex>
-                                                        </Box>
-                                                    </Box>
-                                                </GridItem>
-                                            )
+                                            </GridItem>) : <Box>
+                                                <Table variant="simple">
+                                                    <Thead>
+                                                        <Tr>
+                                                            <Th>Category</Th>
+                                                            <Th>Image</Th>
+                                                            <Th>Actions</Th>
+                                                        </Tr>
+                                                    </Thead>
+                                                    <Tbody>
+                                                        {
+                                                            categories.map((category, index) => <Tr key={index}>
+                                                                <Td>{category.name}</Td>
+                                                                <Td><Image src={category.image} h='50px' /></Td>
+                                                                <Td>
+                                                                    <Button onClick={() => {
+                                                                        onOpen();
+                                                                        setCategory(category);
+                                                                        setQuery('update')
+                                                                    }} colorScheme='blue' size='sm' mr='2'><FaEdit /></Button>
+                                                                    <Button onClick={() => {
+                                                                        setLoading(true);
+                                                                        fetch(`https://cb.techrapid.in/category/${category._id}`, {
+                                                                            method: 'DELETE'
+                                                                        }).then(() => {
+                                                                            setCategories(categories.filter(el => el._id !== category._id));
+                                                                            setLoading(false);
+                                                                            toast({
+                                                                                title: "Category deleted.",
+                                                                                description: "We've deleted the category for you.",
+                                                                                status: "success",
+                                                                                duration: 3000,
+                                                                                isClosable: true,
+                                                                            })
+                                                                        })
+                                                                    }} colorScheme='red' size='sm'><DeleteIcon /></Button>
+                                                                </Td>
+                                                            </Tr>)
+                                                        }
+                                                    </Tbody>
+                                                </Table>
+                                            </Box>
                                         }
-                                    </Grid>
+                                    </Box>
                                 </Box>
                             </GridItem>
                         </Grid>
@@ -150,7 +155,7 @@ function images({ data }) {
                             <Button colorScheme='blue' mr={3} onClick={onClose}>
                                 Close
                             </Button>
-                            <Button colorScheme='green'>
+                            <Button colorScheme='green' onClick={query === 'add' ? addCategory : null}>
                                 {query === 'add' ? 'Add' : 'Update'}
                             </Button>
                         </ModalFooter>
