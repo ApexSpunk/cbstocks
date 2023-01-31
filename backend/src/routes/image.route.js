@@ -7,7 +7,7 @@ const storage = multer.diskStorage({
         cb(null, 'uploads/')
     },
     filename: function (req, file, cb) {
-        cb(null, file.originalname)
+        cb(null, file.originalname + '-' + Date.now())
     }
 });
 const upload = multer({ storage: storage });
@@ -100,13 +100,7 @@ app.delete('/:id', async (req, res) => {
     const { id } = req.params;
     try {
         const image = await Image.findByIdAndDelete(id);
-        console.log(path.join(__dirname, `../uploads/${image.path}`));
-        // delete the image from the uploads folder
-        // remove src/ from the path
         fs.unlinkSync(path.join(__dirname, `../../uploads/${image.path}`));
-
-
-
         res.send({ success: true, image });
     } catch (error) {
         console.log(error);
