@@ -74,7 +74,6 @@ function images({ images, categories, tags, colors }) {
 
     const handleImages = (e) => {
         const files = e.target.files;
-        // push all the files into an array
         const images = [];
         for (let i = 0; i < files.length; i++) {
             images.push(files[i]);
@@ -120,7 +119,7 @@ function images({ images, categories, tags, colors }) {
             })
             setLoading(false)
         }
-        setData([...data, imgs])
+        getImages()
     }
 
 
@@ -176,7 +175,21 @@ function images({ images, categories, tags, colors }) {
                                                                 </Badge>
                                                             </Flex>
                                                             <Text fontSize='md' fontWeight='semibold'>{course.name}</Text>
-                                                            <Text fontSize='sm' fontWeight='semibold' color='gray.500'>{course.category}</Text>
+                                                            <Flex alignItems='center' gap='2' flexWrap='wrap' justifyContent='space-between'>
+                                                                <Text fontSize='sm' fontWeight='semibold' color='gray.500'>Category: {course.category.name}</Text>
+                                                                <Flex alignItems='center' gap='2'>
+                                                                    {
+                                                                        course.colors.map((color, index) => <Box key={index} w='20px' h='20px' borderRadius='full' bg={color.code} />)
+                                                                    }
+                                                                </Flex>
+                                                            </Flex>
+                                                            <Flex mt='4' alignItems='center' flexWrap='wrap' columnGap='2'>
+                                                                {
+                                                                    course.tags.slice(0,2).map((tag, index) => <Badge key={index} colorScheme='green' mb='2'>
+                                                                        {tag.name}
+                                                                    </Badge>)
+                                                                }
+                                                            </Flex>
 
                                                             <Flex alignItems='center' mt='4'>
                                                                 {/* <Button colorScheme='blue' w='full' leftIcon={<FaEdit />} onClick={() => {
