@@ -19,8 +19,29 @@ const fs = require('fs');
 const path = require('path');
 
 app.get('/', async (req, res) => {
+    let { page, limit, category, color, tag, search } = req.query;
+    page = parseInt(page) || 1;
+    limit = parseInt(limit) || 10;
+    const skip = (page - 1) * limit;
+    const query = {};
+    if (category) {
+        query.category = category;
+    }
+    if (color) {
+        query.color = color;
+    }
+    if (tag) {
+        query.tags = tag;
+    }
+    if (search) {
+        query.name = { $regex: search, $options: 'i' };
+    }
     try {
-        const images = await Image.find();
+        const images = await Image.find(query).skip(skip).limit(limit);
+        const updatedImages = images.map(image => {
+            image.path = `http://65.20.70.117:8000/uploads/${image.path}`;
+            return image;
+        });
         res.send({ success: true, images });
     } catch (error) {
         res.send({ success: false, error });

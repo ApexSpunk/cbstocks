@@ -24,7 +24,6 @@ app.get('/test', (req, res) => {
 });
 
 
-// return the image in the requested size and maintain the aspect ratio of the original image without storing the resized image
 app.get('/uploads/:image', async (req, res) => {
     const { image } = req.params;
     const { width } = req.query;
