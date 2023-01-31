@@ -36,13 +36,14 @@ app.get('/', async (req, res) => {
         query.name = { $regex: search, $options: 'i' };
     }
     try {
-        const images = await Image.find(query).skip(skip).limit(limit);
-        const updatedImages = images.map(image => {
+        const images = await Image.find(query).skip(skip).limit(limit).populate({ path: 'category', select: { name: 1, image: 1, likes: 1 } }).populate({ path: 'colors', select: { name: 1, code: 1 } }).populate({ path: 'tags', select: { name: 1 } });
+        images.map(image => {
             image.path = `https://cb.techrapid.in/uploads/${image.path}`;
             return image;
         });
         res.send({ success: true, images });
     } catch (error) {
+        console.log(error);
         res.send({ success: false, error });
     }
 });
@@ -50,7 +51,7 @@ app.get('/', async (req, res) => {
 app.get('/:id', async (req, res) => {
     const { id } = req.params;
     try {
-        const image = await Image.findOne({ _id: id });
+        const image = await Image.findOne({ _id: id }).populate({ path: 'category', select: { name: 1, image: 1, likes: 1 } }).populate({ path: 'colors', select: { name: 1, code: 1 } }).populate({ path: 'tags', select: { name: 1 } });
         res.send({ success: true, image });
     } catch (error) {
         res.send({ success: false, error });
@@ -63,8 +64,10 @@ app.post('/upload', upload.array('images'), async (req, res) => {
     try {
         const images = files.map(file => {
             const { filename, originalname } = file;
-            const image = new Image({ name: name || originalname, path: filename, category, tags, colors });
-            image.save();
+            const image = new Image({ name: name || originalname, path: filename, category, tags, colors }).populate({ path: 'category', select: { name: 1, image: 1, likes: 1 } }).populate({ path: 'colors', select: { name: 1, code: 1 } }).populate({ path: 'tags', select: { name: 1 } });
+            image.save().then(image => {
+                image.path = `https://cb.techrapid.in/uploads/${image.path}`;
+            });
             return image;
         });
         res.send({ success: true, images });
@@ -76,7 +79,7 @@ app.post('/upload', upload.array('images'), async (req, res) => {
 app.post('/like/:id', async (req, res) => {
     const { id } = req.params;
     try {
-        const image = await Image.findByIdAndUpdate(id, { $inc: { likes: 1 } }, { new: true });
+        const image = await Image.findByIdAndUpdate(id, { $inc: { likes: 1 } }, { new: true }).populate({ path: 'category', select: { name: 1, image: 1, likes: 1 } }).populate({ path: 'colors', select: { name: 1, code: 1 } }).populate({ path: 'tags', select: { name: 1 } });
         res.send({ success: true, image });
     } catch (error) {
         res.send({ success: false, error });
@@ -89,7 +92,7 @@ app.patch('/:id', async (req, res) => {
     const { id } = req.params;
     const { name, category, tags, colors } = req.body;
     try {
-        const image = await Image.findByIdAndUpdate(id, { name, category, tags, colors }, { new: true });
+        const image = await Image.findByIdAndUpdate(id, { name, category, tags, colors }, { new: true }).populate({ path: 'category', select: { name: 1, image: 1, likes: 1 } }).populate({ path: 'colors', select: { name: 1, code: 1 } }).populate({ path: 'tags', select: { name: 1 } });
         res.send({ success: true, image });
     } catch (error) {
         res.send({ success: false, error });
