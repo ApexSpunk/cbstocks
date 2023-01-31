@@ -27,6 +27,16 @@ app.get('/', async (req, res) => {
     }
 });
 
+app.get('/:id', async (req, res) => {
+    const { id } = req.params;
+    try {
+        const image = await Image.findOne({ _id: id });
+        res.send({ success: true, image });
+    } catch (error) {
+        res.send({ success: false, error });
+    }
+});
+
 app.post('/upload', upload.array('images'), async (req, res) => {
     const { name, category, tags, colors } = req.body;
     const files = req.files;
