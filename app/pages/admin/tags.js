@@ -9,67 +9,24 @@ import { DeleteIcon } from '@chakra-ui/icons'
 // use server side rendering to fetch data http://65.20.70.117:8000/image
 
 export async function getServerSideProps() {
-    const res = await fetch('http://65.20.70.117:8000/image')
-    const { images } = await res.json()
+    const res = await fetch('http://65.20.70.117:8000/tags')
+    const { tags } = await res.json()
     return {
         props: {
-            images: images
+            data: tags
         }
     }
 }
 
 
 
-function images({ images }) {
+function images({ data }) {
     const [loading, setLoading] = React.useState(false);
-    const [data, setData] = React.useState(images);
     const { isOpen, onOpen, onClose } = useDisclosure();
     const [query, setQuery] = React.useState('update');
     const toast = useToast();
 
     const [course, setCourse] = React.useState({ title: '', description: '', slug: '', type: 'free', image: '', totalDuration: '', videos: [{ subtitle: '', duration: '', src: '' }] })
-
-    const handleDelete = async (id) => {
-        setLoading(true)
-        const res = fetch(`http://65.20.70.117:8000/image/${id}`, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
-        const { success } = await res.then(res => res.json())
-        if (success) {
-            toast({
-                title: "Image deleted.",
-                description: "We've deleted the image for you.",
-                status: "success",
-                duration: 3000,
-                isClosable: true,
-            })
-            setLoading(false)
-        } else {
-            toast({
-                title: "An error occurred.",
-                description: "We're unable to delete the image at this time.",
-                status: "error",
-                duration: 3000,
-                isClosable: true,
-            })
-            setLoading(false)
-        }
-        getImages()
-    }
-
-    const getImages = async () => {
-        setLoading(true)
-        const res = await fetch('http://65.20.70.117:8000/image')
-        const { images } = await res.json()
-        setData(images)
-        setLoading(false)
-    }
-
-
-
     return (
         <>
             <Admin>
@@ -81,12 +38,12 @@ function images({ images }) {
                                     <Box p='4' mt='4' borderRadius='lg' bg='white'>
                                         <Flex alignItems='center' gap='2'>
                                             <FaBookReader />
-                                            <Text fontSize='2xl' fontWeight='semibold'>Manage Images</Text>
+                                            <Text fontSize='2xl' fontWeight='semibold'>Manage Tags</Text>
                                             <Button onClick={() => {
                                                 onOpen();
                                                 setCourse({ title: '', description: '', slug: '', type: 'free', image: '', totalDuration: '', videos: [{ subtitle: '', duration: '', src: '' }] })
                                                 setQuery('add')
-                                            }} colorScheme='blue' size='md' ml='auto'>Add Image</Button>
+                                            }} colorScheme='blue' size='md' ml='auto'>Add Tag</Button>
                                         </Flex>
                                     </Box>
                                     <Grid templateColumns="repeat(3, 1fr)" gap={6} mt='4'>
@@ -130,7 +87,24 @@ function images({ images }) {
                                                                 }}>
                                                                     Edit
                                                                 </Button>
-                                                                <Button colorScheme='red' w='full' ml='2' leftIcon={<DeleteIcon />} onClick={() => handleDelete(course._id)}>
+                                                                <Button colorScheme='red' w='full' ml='2' leftIcon={<DeleteIcon />} onClick={() => {
+                                                                    const res = fetch(`http://65.20.70.117:8000/image/${course._id}`, {
+                                                                        method: 'DELETE',
+                                                                        headers: {
+                                                                            'Content-Type': 'application/json'
+                                                                        }
+                                                                    })
+                                                                    console.log(res)
+                                                                    if (res.success) {
+                                                                        toast({
+                                                                            title: `Course ${course.title} deleted`,
+                                                                            description: "Course has been deleted successfully",
+                                                                            status: "success",
+                                                                            duration: 9000,
+                                                                            isClosable: true,
+                                                                        })
+                                                                    }
+                                                                }}>
                                                                     Delete
                                                                 </Button>
                                                             </Flex>

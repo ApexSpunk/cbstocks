@@ -42,7 +42,9 @@ import { signOut } from 'next-auth/react';
 const LinkItems = [
     { name: 'Home', icon: FiHome, link: '/' },
     { name: 'Images', icon: FiImage, link: '/admin/images' },
-    { name: 'Users', icon: FiStar, link: '/admin/users' },
+    { name: 'Categories', icon: FiCompass, link: '/admin/categories' },
+    { name: 'Colors', icon: FiStar, link: '/admin/colors' },
+    { name: 'Tags', icon: FiTrendingUp, link: '/admin/tags' },
 ];
 
 export default function SidebarWithHeader({
