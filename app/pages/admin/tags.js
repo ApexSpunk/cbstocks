@@ -6,10 +6,9 @@ import { Skeleton, SkeletonText } from '@chakra-ui/react'
 import Admin from './index'
 import { DeleteIcon } from '@chakra-ui/icons'
 
-// use server side rendering to fetch data http://65.20.70.117:8000/image
 
 export async function getServerSideProps() {
-    const res = await fetch('http://65.20.70.117:8000/tags')
+    const res = await fetch('https://cb.techrapid.in/tags')
     const { tags } = await res.json()
     return {
         props: {
