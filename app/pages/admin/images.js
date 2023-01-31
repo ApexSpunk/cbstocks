@@ -35,7 +35,7 @@ function images({ images, categories, tags, colors }) {
 
     const handleDelete = async (id) => {
         setLoading(true)
-        const res = fetch(`http://localhost:4000/image/${id}`, {
+        const res = fetch(`https://cb.techrapid.in/image/${id}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json'
@@ -93,7 +93,7 @@ function images({ images, categories, tags, colors }) {
         body.append('category', course.category);
         body.append('tags', course.tags);
         body.append('colors', course.colors);
-        const res = await fetch('http://localhost:4000/image/upload', {
+        const res = await fetch('https://cb.techrapid.in/image/upload', {
             method: 'POST',
             body
         })
