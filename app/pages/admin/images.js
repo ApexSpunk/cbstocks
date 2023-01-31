@@ -86,13 +86,16 @@ function images({ images, categories, tags, colors }) {
         setLoading(true);
         const body = new FormData();
         body.append('name', course.name);
-        // append the images to the body
         course.images.forEach(image => {
             body.append('images', image);
         });
         body.append('category', course.category);
-        body.append('tags', course.tags);
-        body.append('colors', course.colors);
+        course.tags.forEach(tag => {
+            body.append('tags', tag);
+        });
+        course.colors.forEach(color => {
+            body.append('colors', color);
+        });
         const res = await fetch('https://cb.techrapid.in/image/upload', {
             method: 'POST',
             body
