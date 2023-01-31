@@ -67,7 +67,7 @@ app.post('/upload', upload.array('images'), async (req, res) => {
     try {
         const images = files.map(file => {
             const { filename, originalname } = file;
-            const image = new Image({ name: name || originalname, path: filename, category, tags, colors }).populate({ path: 'category', select: { name: 1, image: 1, likes: 1 } }).populate({ path: 'colors', select: { name: 1, code: 1 } }).populate({ path: 'tags', select: { name: 1 } });
+            const image = new Image({ name: name || originalname, path: filename, category, tags, colors });
             image.save().then(image => {
                 image.path = `https://cb.techrapid.in/uploads/${image.path}`;
             });
