@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express.Router();
 const Image = require('../models/image');
-const multer  = require('multer');
+const multer = require('multer');
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, 'uploads/')
@@ -100,15 +100,16 @@ app.delete('/:id', async (req, res) => {
     const { id } = req.params;
     try {
         const image = await Image.findByIdAndDelete(id);
-        fs.unlink(path.join(__dirname, `../uploads/${image.path.split('/').pop()}`), (err) => {
-            if (err) {
-                console.error(err)
-                return
-            }
-        }
-        );
+        console.log(path.join(__dirname, `../uploads/${image.path}`));
+        // delete the image from the uploads folder
+        // remove src/ from the path
+        fs.unlinkSync(path.join(__dirname, `../../uploads/${image.path}`));
+
+
+
         res.send({ success: true, image });
     } catch (error) {
+        console.log(error);
         res.send({ success: false, error });
     }
 });

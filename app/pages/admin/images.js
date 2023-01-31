@@ -31,11 +31,11 @@ function images({ images, categories, tags, colors }) {
     const toast = useToast();
 
 
-    const [course, setCourse] = React.useState({ name: '', images: '', category: '', tags: [], colors: [] });
+    const [course, setCourse] = React.useState({ name: '', images: [], category: '', tags: [], colors: [] });
 
     const handleDelete = async (id) => {
         setLoading(true)
-        const res = fetch(`https://cb.techrapid.in/image/${id}`, {
+        const res = fetch(`http://localhost:4000/image/${id}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json'
@@ -72,11 +72,24 @@ function images({ images, categories, tags, colors }) {
         setLoading(false)
     }
 
+    const handleImages = (e) => {
+        const files = e.target.files;
+        // push all the files into an array
+        const images = [];
+        for (let i = 0; i < files.length; i++) {
+            images.push(files[i]);
+        }
+        setCourse({ ...course, images });
+    }
+
     const addImage = async () => {
         setLoading(true);
         const body = new FormData();
         body.append('name', course.name);
-        body.append('images', course.images);
+        // append the images to the body
+        course.images.forEach(image => {
+            body.append('images', image);
+        });
         body.append('category', course.category);
         body.append('tags', course.tags);
         body.append('colors', course.colors);
@@ -122,11 +135,11 @@ function images({ images, categories, tags, colors }) {
                                         <Flex alignItems='center' gap='2'>
                                             <FaBookReader />
                                             <Text fontSize='2xl' fontWeight='semibold'>Manage Images</Text>
-                                            {/* <Button onClick={() => {
+                                            <Button onClick={() => {
                                                 onOpen();
-                                                setCourse({ name: '', images: '', category: '', tags: [], colors: [] })
+                                                setCourse({ name: '', images: [], category: '', tags: [], colors: [] });
                                                 setQuery('add')
-                                            }} colorScheme='blue' size='md' ml='auto'>Add Image</Button> */}
+                                            }} colorScheme='blue' size='md' ml='auto'>Add Image</Button>
                                         </Flex>
                                     </Box>
                                     <Grid templateColumns="repeat(3, 1fr)" gap={6} mt='4'>
@@ -206,7 +219,7 @@ function images({ images, categories, tags, colors }) {
                                 </InputGroup>
                                 <InputGroup mt='4'>
                                     <InputLeftElement pointerEvents='none' children={<FaImages />} />
-                                    <Input type='file' placeholder='Select Images' accept='image/*' multiple onChange={(e) => setCourse({ ...course, images: e.target.files })} />
+                                    <Input type='file' placeholder='Select Images' accept='image/*' multiple onChange={handleImages} />
                                 </InputGroup>
 
                                 <InputGroup mt='4'>
