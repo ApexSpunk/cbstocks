@@ -1,7 +1,7 @@
 import { Badge, Box, Button, Flex, Grid, GridItem, Image, Input, InputGroup, InputLeftElement, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Select, Text, Textarea, useDisclosure, useToast } from '@chakra-ui/react'
 import Link from 'next/link'
 import React from 'react'
-import { FaAdjust, FaBook, FaBookMedical, FaBookReader, FaBrain, FaClock, FaEdit, FaGift, FaHeading, FaHeadSideCough, FaHome, FaImage, FaListUl, FaMoneyBill, FaTiktok, FaTimes, FaUser, FaVideo, FaVideoSlash } from 'react-icons/fa'
+import { FaAdjust, FaBook, FaBookMedical, FaBookReader, FaBrain, FaClock, FaCocktail, FaEdit, FaGift, FaHeading, FaHeadSideCough, FaHome, FaImage, FaImages, FaListUl, FaMoneyBill, FaTiktok, FaTimes, FaUser, FaVideo, FaVideoSlash } from 'react-icons/fa'
 import { Skeleton, SkeletonText } from '@chakra-ui/react'
 import Admin from './index'
 import { DeleteIcon } from '@chakra-ui/icons'
@@ -9,24 +9,29 @@ import { DeleteIcon } from '@chakra-ui/icons'
 
 export async function getServerSideProps() {
     const res = await fetch('https://cb.techrapid.in/image')
+    const cate = await fetch('https://cb.techrapid.in/category')
+    const tag = await fetch('https://cb.techrapid.in/tags')
+    const colo = await fetch('https://cb.techrapid.in/color')
     const { images } = await res.json()
+    const { categories } = await cate.json()
+    const { tags } = await tag.json()
+    const { colors } = await colo.json()
     return {
-        props: {
-            images: images
-        }
+        props: { images, categories, tags, colors }
     }
 }
 
 
 
-function images({ images }) {
+function images({ images, categories, tags, colors }) {
     const [loading, setLoading] = React.useState(false);
     const [data, setData] = React.useState(images);
     const { isOpen, onOpen, onClose } = useDisclosure();
     const [query, setQuery] = React.useState('update');
     const toast = useToast();
 
-    const [course, setCourse] = React.useState({ title: '', description: '', slug: '', type: 'free', image: '', totalDuration: '', videos: [{ subtitle: '', duration: '', src: '' }] })
+
+    const [course, setCourse] = React.useState({ name: '', images: '', category: '', tags: [], colors: [] });
 
     const handleDelete = async (id) => {
         setLoading(true)
@@ -56,7 +61,7 @@ function images({ images }) {
             })
             setLoading(false)
         }
-        getImages()
+        setData(data.filter(item => item._id !== id))
     }
 
     const getImages = async () => {
@@ -66,6 +71,42 @@ function images({ images }) {
         setData(images)
         setLoading(false)
     }
+
+    const addImage = async () => {
+        setLoading(true);
+        const body = new FormData();
+        body.append('name', course.name);
+        body.append('images', course.images);
+        body.append('category', course.category);
+        body.append('tags', course.tags);
+        body.append('colors', course.colors);
+        const res = await fetch('http://localhost:4000/image/upload', {
+            method: 'POST',
+            body
+        })
+        const { success, images: imgs } = await res.json()
+        if (success) {
+            toast({
+                title: "Image added.",
+                description: "We've added the image for you.",
+                status: "success",
+                duration: 3000,
+                isClosable: true,
+            })
+            setLoading(false)
+        } else {
+            toast({
+                title: "An error occurred.",
+                description: "We're unable to add the image at this time.",
+                status: "error",
+                duration: 3000,
+                isClosable: true,
+            })
+            setLoading(false)
+        }
+        setData([...data, imgs])
+    }
+
 
 
 
@@ -81,11 +122,11 @@ function images({ images }) {
                                         <Flex alignItems='center' gap='2'>
                                             <FaBookReader />
                                             <Text fontSize='2xl' fontWeight='semibold'>Manage Images</Text>
-                                            <Button onClick={() => {
+                                            {/* <Button onClick={() => {
                                                 onOpen();
-                                                setCourse({ title: '', description: '', slug: '', type: 'free', image: '', totalDuration: '', videos: [{ subtitle: '', duration: '', src: '' }] })
+                                                setCourse({ name: '', images: '', category: '', tags: [], colors: [] })
                                                 setQuery('add')
-                                            }} colorScheme='blue' size='md' ml='auto'>Add Image</Button>
+                                            }} colorScheme='blue' size='md' ml='auto'>Add Image</Button> */}
                                         </Flex>
                                     </Box>
                                     <Grid templateColumns="repeat(3, 1fr)" gap={6} mt='4'>
@@ -122,13 +163,13 @@ function images({ images }) {
                                                             <Text fontSize='sm' fontWeight='semibold' color='gray.500'>{course.category}</Text>
 
                                                             <Flex alignItems='center' mt='4'>
-                                                                <Button colorScheme='blue' w='full' leftIcon={<FaEdit />} onClick={() => {
+                                                                {/* <Button colorScheme='blue' w='full' leftIcon={<FaEdit />} onClick={() => {
                                                                     setCourse(course);
                                                                     onOpen();
                                                                     setQuery('update')
                                                                 }}>
                                                                     Edit
-                                                                </Button>
+                                                                </Button> */}
                                                                 <Button colorScheme='red' w='full' ml='2' leftIcon={<DeleteIcon />} onClick={() => handleDelete(course._id)}>
                                                                     Delete
                                                                 </Button>
@@ -144,122 +185,70 @@ function images({ images }) {
                         </Grid>
                     </Box>
                 </Box>
-                <Modal blockScrollOnMount={false} isOpen={isOpen} onClose={onClose} size='5xl'>
+                <Modal blockScrollOnMount={false} isOpen={isOpen} onClose={onClose} size='2xl'>
                     <ModalOverlay />
                     <ModalContent>
                         <ModalHeader>
                             <Text fontSize='xl' my='3' fontWeight='semibold'>
                                 Preview & {query === 'add' ? 'Add' : 'Update'} Image
                             </Text>
-                            <Flex alignItems='center' gap='2'>
-                                <GridItem colSpan={1} w='50%'>
-                                    <Box borderRadius='lg' boxShadow={'md'} bg='white'>
-                                        <Image src={course.image || "https://img.freepik.com/premium-vector/online-courses-concept_23-2148524391.jpg?w=2000"} roundedTop={'lg'} />
-                                        <Box p='4'>
-                                            <Badge colorScheme={course.type === 'free' ? 'green' : 'orange'} mb='2'>
-                                                {course.type} Course
-                                            </Badge>
-                                            <Text fontSize='md' fontWeight='semibold'>{course.title}</Text>
-                                            <Text mt='2' fontSize='sm' textColor='gray.500'>Learn {
-                                                course.title?.split('to')[1]?.length > 10 ? `${course.title.split('to')[1].slice(0, 10)}... ` : course.title.split('to')[1]
-                                            } from scratch</Text>
-                                            <Text mt='2' fontSize='sm' textColor='gray.500'>Duration: <Badge colorScheme='green' ml='2'>{
-                                                course.totalDuration
-                                            } Mins</Badge></Text>
-                                        </Box>
-                                    </Box>
-                                </GridItem>
-                                <Box w='50%'>
-                                    <InputGroup>
-                                        <InputLeftElement pointerEvents='none' children={<FaAdjust />} />
-                                        <Input type='text' placeholder='Course Title' value={course.title} onChange={(e) => setCourse({ ...course, title: e.target.value })} />
-                                    </InputGroup>
-                                    <InputGroup mt='4'>
-                                        <Textarea type='text' placeholder='Course Description' value={course.description} onChange={(e) => setCourse({ ...course, description: e.target.value })} />
-                                    </InputGroup>
-                                    <InputGroup mt='4'>
-                                        <InputLeftElement pointerEvents='none' children={<FaListUl />} />
-                                        <Input type='text' placeholder='Course Slug' value={course.slug} onChange={(e) => setCourse({ ...course, slug: e.target.value })} />
-                                    </InputGroup>
-                                    <InputGroup mt='4'>
-                                        <Select value={course.type} onChange={(e) => setCourse({ ...course, type: e.target.value })}>
-                                            <option value='free'>Free</option>
-                                            <option value='paid'>Paid</option>
-                                        </Select>
-                                    </InputGroup>
-                                    <InputGroup mt='4'>
-                                        <InputLeftElement pointerEvents='none' children={<FaImage />} />
-                                        <Input type='text' placeholder='Course Image' value={course.image} onChange={(e) => setCourse({ ...course, image: e.target.value })} />
-                                    </InputGroup>
-                                    <InputGroup mt='4'>
-                                        <InputLeftElement pointerEvents='none' children={<FaClock />} />
-                                        <Input type='text' placeholder='Course Duration' value={course.totalDuration} onChange={(e) => setCourse({ ...course, totalDuration: e.target.value })} />
-                                    </InputGroup>
-                                </Box>
-                            </Flex>
+                            <Box>
+                                <InputGroup>
+                                    <InputLeftElement pointerEvents='none' children={<FaAdjust />} />
+                                    <Input type='text' placeholder='Image Name' value={course.name} onChange={(e) => setCourse({ ...course, name: e.target.value })} />
+                                </InputGroup>
+                                <InputGroup mt='4'>
+                                    <Select placeholder='Select Category' value={course.category} onChange={(e) => setCourse({ ...course, category: e.target.value })}>
+                                        {
+                                            categories.map((category, index) => <option key={index} value={category._id}>{category.name}</option>)
+                                        }
+                                    </Select>
+                                </InputGroup>
+                                <InputGroup mt='4'>
+                                    <InputLeftElement pointerEvents='none' children={<FaImages />} />
+                                    <Input type='file' placeholder='Select Images' accept='image/*' multiple onChange={(e) => setCourse({ ...course, images: e.target.files })} />
+                                </InputGroup>
+
+                                <InputGroup mt='4'>
+                                    <Select placeholder='Select Colors' onChange={(e) => course.colors.includes(e.target.value) ? null : setCourse({ ...course, colors: [...course.colors, e.target.value] })}>
+                                        {
+                                            colors.map((color, index) => <option key={index} value={color._id}>{color.name}</option>)
+                                        }
+                                    </Select>
+                                </InputGroup>
+                                <InputGroup mt='4'>
+                                    <Select placeholder='Select Tags' onChange={(e) => course.tags.includes(e.target.value) ? null : setCourse({ ...course, tags: [...course.tags, e.target.value] })}>
+                                        {
+                                            tags.map((tag, index) => <option key={index} value={tag._id}>{tag.name}</option>)
+                                        }
+                                    </Select>
+                                </InputGroup>
+                                {
+                                    course.colors && course.colors.length > 0 && <Flex mt='4' alignItems='center' gap='2'>
+                                        <Text fontSize='md' fontWeight='semibold'>Colors:</Text>
+                                        {
+                                            course.colors.map((color, index) => <Box key={index} w='10' h='10' borderRadius='full' bg={colors.find((el) => el._id === color).code} />)
+                                        }
+                                    </Flex>
+                                }
+                                {
+                                    course.tags && course.tags.length > 0 && <Flex mt='4' alignItems='center' gap='2'>
+                                        <Text fontSize='md' fontWeight='semibold'>Tags:</Text>
+                                        {
+                                            course.tags.map((tag, index) => <Badge key={index} colorScheme='green'>{tags.find((el) => el._id === tag).name}</Badge>)
+                                        }
+                                    </Flex>
+                                }
+
+                            </Box>
                         </ModalHeader>
                         <ModalCloseButton />
-                        <ModalBody>
-                            <Grid templateColumns='repeat(2, 1fr)' gap={6}>
-                                {
-                                    course?.videos?.map((video, index) => (
-                                        <Box key={index} mt='4'>
-                                            <InputGroup>
-                                                <InputLeftElement pointerEvents='none' children={<FaVideo />} />
-                                                <Input type='text' placeholder={`Video Title ${index + 1}`} value={video.subtitle} onChange={(e) => {
-                                                    const newVideos = course.videos;
-                                                    newVideos[index].subtitle = e.target.value;
-                                                    setCourse({ ...course, videos: newVideos });
-                                                }
-                                                } />
-                                            </InputGroup>
-                                            <InputGroup mt='4'>
-                                                <InputLeftElement pointerEvents='none' children={<FaClock />} />
-                                                <Input type='text' placeholder={`Video Duration ${index + 1}`} value={video.duration} onChange={(e) => {
-                                                    const newVideos = course.videos;
-                                                    newVideos[index].duration = e.target.value;
-                                                    setCourse({ ...course, videos: newVideos });
-                                                }
-                                                } />
-                                            </InputGroup>
-                                            <InputGroup mt='4'>
-                                                <InputLeftElement pointerEvents='none' children={<FaVideoSlash />} />
-                                                <Input type='text' placeholder={`Video URL ${index + 1}`} value={video.src} onChange={(e) => {
-                                                    const newVideos = course.videos;
-                                                    newVideos[index].src = e.target.value;
-                                                    setCourse({ ...course, videos: newVideos });
-                                                }
-                                                } />
-                                            </InputGroup>
-                                        </Box>
-                                    ))
-                                }
-                            </Grid>
-                        </ModalBody>
 
                         <ModalFooter>
-                            <Button colorScheme='green' mr={3} onClick={() => {
-                                const newVideos = course.videos;
-                                newVideos.push({ subtitle: '', duration: '', src: '' });
-                                setCourse({ ...course, videos: newVideos });
-                            }}>
-                                Add Video
-                            </Button>
                             <Button colorScheme='blue' mr={3} onClick={onClose}>
                                 Close
                             </Button>
-                            <Button colorScheme={course.type === 'free' ? 'green' : 'orange'} onClick={() => {
-                                console.log('course');
-                                if (query === 'add') {
-                                    dispatch(addCourse(course));
-                                    toast({ title: `Course ${course.title} added`, status: 'success', duration: 3000, isClosable: true, position: 'top' });
-                                }
-                                if (query === 'update') {
-                                    dispatch(updateCourse(course));
-                                    toast({ title: `Course ${course.title} added`, status: 'success', duration: 3000, isClosable: true, position: 'top' });
-                                }
-                                onClose();
-                            }}>
+                            <Button colorScheme='green' onClick={addImage}>
                                 Save
                             </Button>
                         </ModalFooter>

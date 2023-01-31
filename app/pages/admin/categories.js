@@ -72,7 +72,7 @@ function images({ data }) {
                                             }} colorScheme='blue' size='md' ml='auto'>Add Category</Button>
                                         </Flex>
                                     </Box>
-                                    <Box mt='4'>
+                                    <Grid templateColumns="repeat(4, 1fr)" gap={6} mt='4'>
                                         {
                                             loading ? new Array(6).fill(6).map((el, index) => <GridItem colSpan={1} key={index} >
                                                 <Box borderRadius='lg' boxShadow={'md'} bg='white'>
@@ -84,50 +84,43 @@ function images({ data }) {
 
                                                     </Box>
                                                 </Box>
-                                            </GridItem>) : <Box>
-                                                <Table variant="simple">
-                                                    <Thead>
-                                                        <Tr>
-                                                            <Th>Category</Th>
-                                                            <Th>Image</Th>
-                                                            <Th>Actions</Th>
-                                                        </Tr>
-                                                    </Thead>
-                                                    <Tbody>
-                                                        {
-                                                            categories.map((category, index) => <Tr key={index}>
-                                                                <Td>{category.name}</Td>
-                                                                <Td><Image src={category.image} h='50px' /></Td>
-                                                                <Td>
-                                                                    <Button onClick={() => {
-                                                                        onOpen();
-                                                                        setCategory(category);
-                                                                        setQuery('update')
-                                                                    }} colorScheme='blue' size='sm' mr='2'><FaEdit /></Button>
-                                                                    <Button onClick={() => {
-                                                                        setLoading(true);
-                                                                        fetch(`https://cb.techrapid.in/category/${category._id}`, {
-                                                                            method: 'DELETE'
-                                                                        }).then(() => {
-                                                                            setCategories(categories.filter(el => el._id !== category._id));
-                                                                            setLoading(false);
-                                                                            toast({
-                                                                                title: "Category deleted.",
-                                                                                description: "We've deleted the category for you.",
-                                                                                status: "success",
-                                                                                duration: 3000,
-                                                                                isClosable: true,
-                                                                            })
+                                            </GridItem>) : categories.map((category, index) => <GridItem colSpan={1} key={index} >
+                                                <Box borderRadius='lg' boxShadow={'md'} bg='white'>
+                                                    <Image src={category.image} roundedTop={'lg'} h={'180px'} w='100%' objectFit='cover' />
+                                                    <Box p='4'>
+                                                        <Flex alignItems='center' gap='2' mt='2'>
+                                                            <Text fontSize='xl' fontWeight='semibold'>{category.name}</Text>
+                                                            <Flex alignItems='center' gap='2' ml='auto'>
+                                                                <Button colorScheme={'blue'} size='sm' onClick={() => {
+                                                                    onOpen();
+                                                                    setCategory(category);
+                                                                    setQuery('update')
+                                                                }}><FaEdit />
+                                                                </Button>
+                                                                <Button colorScheme={'red'} size='sm' onClick={() => {
+                                                                    setLoading(true);
+                                                                    fetch(`https://cb.techrapid.in/category/${category._id}`, {
+                                                                        method: 'DELETE'
+                                                                    }).then(res => res.json()).then(data => {
+                                                                        setCategories(categories.filter(el => el._id !== category._id));
+                                                                        setLoading(false);
+                                                                        toast({
+                                                                            title: "Category deleted.",
+                                                                            description: "We've deleted the category for you.",
+                                                                            status: "success",
+                                                                            duration: 3000,
+                                                                            isClosable: true,
                                                                         })
-                                                                    }} colorScheme='red' size='sm'><DeleteIcon /></Button>
-                                                                </Td>
-                                                            </Tr>)
-                                                        }
-                                                    </Tbody>
-                                                </Table>
-                                            </Box>
+                                                                    })
+                                                                }}><DeleteIcon />
+                                                                </Button>
+                                                            </Flex>
+                                                        </Flex>
+                                                    </Box>
+                                                </Box>
+                                            </GridItem>)
                                         }
-                                    </Box>
+                                    </Grid>
                                 </Box>
                             </GridItem>
                         </Grid>
