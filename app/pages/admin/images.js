@@ -10,7 +10,7 @@ import { DeleteIcon } from '@chakra-ui/icons'
 
 export async function getServerSideProps() {
     const res = await fetch('http://65.20.70.117:8000/image')
-    const {images} = await res.json()
+    const { images } = await res.json()
     return {
         props: {
             data: images
@@ -26,7 +26,7 @@ function images({ data }) {
     const { isOpen, onOpen, onClose } = useDisclosure();
     const [query, setQuery] = React.useState('update');
     const toast = useToast();
-    
+
     const [course, setCourse] = React.useState({ title: '', description: '', slug: '', type: 'free', image: '', totalDuration: '', videos: [{ subtitle: '', duration: '', src: '' }] })
     return (
         <>
@@ -44,7 +44,7 @@ function images({ data }) {
                                                 onOpen();
                                                 setCourse({ title: '', description: '', slug: '', type: 'free', image: '', totalDuration: '', videos: [{ subtitle: '', duration: '', src: '' }] })
                                                 setQuery('add')
-                                            }} colorScheme='blue' size='md' ml='auto'>Add Course</Button>
+                                            }} colorScheme='blue' size='md' ml='auto'>Add Image</Button>
                                         </Flex>
                                     </Box>
                                     <Grid templateColumns="repeat(3, 1fr)" gap={6} mt='4'>
@@ -62,18 +62,24 @@ function images({ data }) {
                                             </GridItem>) : data?.map((course, index) =>
                                                 <GridItem colSpan={1} key={index} >
                                                     <Box borderRadius='lg' boxShadow={'md'} bg='white'>
-                                                        <Image src={course.path} roundedTop={'lg'} />
+                                                        <Image src={course.path} roundedTop={'lg'} h={'180px'} w='100%' objectFit='cover' />
                                                         <Box p='4'>
-                                                            <Badge colorScheme={course.type === 'free' ? 'green' : 'orange'} mb='2'>
-                                                                {course.type} Course
-                                                            </Badge>
-                                                            <Text fontSize='md' fontWeight='semibold'>{course.title?.slice(0, 25)}...</Text>
-                                                            <Text mt='2' fontSize='sm' textColor='gray.500'>Learn {
-                                                                course.name.split('to')[1]?.length > 10 ? `${course.title?.split('to')[1].slice(0, 10)}... ` : course.title?.split('to')[1]
-                                                            } from scratch</Text>
-                                                            <Text mt='2' fontSize='sm' textColor='gray.500'>Duration: <Badge colorScheme='green' ml='2'>{
-                                                                course.totalDuration
-                                                            } Mins</Badge></Text>
+                                                            <Flex alignItems='center' justifyContent='space-between'>
+                                                                <Flex alignItems='center' gap='2'>
+                                                                    <Badge colorScheme='green' mb='2'>
+                                                                        Likes: {course.likes}
+                                                                    </Badge>
+                                                                    <Badge colorScheme='blue' mb='2'>
+                                                                        Views: {course.views}
+                                                                    </Badge>
+                                                                </Flex>
+                                                                <Badge colorScheme='orange' mb='2'>
+                                                                    Downloads: {course.downloads}
+                                                                </Badge>
+                                                            </Flex>
+                                                            <Text fontSize='md' fontWeight='semibold'>{course.name}</Text>
+                                                            <Text fontSize='sm' fontWeight='semibold' color='gray.500'>{course.category}</Text>
+
                                                             <Flex alignItems='center' mt='4'>
                                                                 <Button colorScheme='blue' w='full' leftIcon={<FaEdit />} onClick={() => {
                                                                     setCourse(course);
@@ -83,14 +89,22 @@ function images({ data }) {
                                                                     Edit
                                                                 </Button>
                                                                 <Button colorScheme='red' w='full' ml='2' leftIcon={<DeleteIcon />} onClick={() => {
-                                                                    dispatch(deleteCourse(course._id));
-                                                                    toast({
-                                                                        title: `Course ${course.title} deleted`,
-                                                                        description: "Course has been deleted successfully",
-                                                                        status: "success",
-                                                                        duration: 9000,
-                                                                        isClosable: true,
+                                                                    const res = fetch(`http://65.20.70.117:8000/image/${course._id}`, {
+                                                                        method: 'DELETE',
+                                                                        headers: {
+                                                                            'Content-Type': 'application/json'
+                                                                        }
                                                                     })
+                                                                    console.log(res)
+                                                                    if (res.success) {
+                                                                        toast({
+                                                                            title: `Course ${course.title} deleted`,
+                                                                            description: "Course has been deleted successfully",
+                                                                            status: "success",
+                                                                            duration: 9000,
+                                                                            isClosable: true,
+                                                                        })
+                                                                    }
                                                                 }}>
                                                                     Delete
                                                                 </Button>
@@ -111,7 +125,7 @@ function images({ data }) {
                     <ModalContent>
                         <ModalHeader>
                             <Text fontSize='xl' my='3' fontWeight='semibold'>
-                                Preview & {query === 'add' ? 'Add' : 'Update'} Course
+                                Preview & {query === 'add' ? 'Add' : 'Update'} Image
                             </Text>
                             <Flex alignItems='center' gap='2'>
                                 <GridItem colSpan={1} w='50%'>
@@ -214,9 +228,9 @@ function images({ data }) {
                                 console.log('course');
                                 if (query === 'add') {
                                     dispatch(addCourse(course));
-                                    toast({ title: `Course ${course.title} added`,status: 'success', duration: 3000, isClosable: true, position: 'top' });
+                                    toast({ title: `Course ${course.title} added`, status: 'success', duration: 3000, isClosable: true, position: 'top' });
                                 }
-                                if(query === 'update') {
+                                if (query === 'update') {
                                     dispatch(updateCourse(course));
                                     toast({ title: `Course ${course.title} added`, status: 'success', duration: 3000, isClosable: true, position: 'top' });
                                 }

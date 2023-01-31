@@ -6,6 +6,7 @@ const cors = require('cors');
 const categoryRoute = require('./routes/category.route');
 const imageRoute = require('./routes/image.route');
 const colorRoute = require('./routes/color.route');
+const tagRoute = require('./routes/tags.route');
 const sharp = require('sharp');
 
 const app = express();
@@ -14,6 +15,7 @@ app.use(cors());
 app.use('/category', categoryRoute);
 app.use('/image', imageRoute);
 app.use('/color', colorRoute);
+app.use('/tags', tagRoute);
 
 app.get('/', (req, res) => {
     res.send({ message: 'Welcome to cbstocks' });
@@ -42,10 +44,6 @@ app.get('/uploads/:image', async (req, res) => {
         res.send({ success: false, error });
     }
 });
-
-
-
-
 
 
 

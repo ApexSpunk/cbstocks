@@ -101,7 +101,13 @@ app.delete('/:id', async (req, res) => {
     const { id } = req.params;
     try {
         const image = await Image.findByIdAndDelete(id);
-        fs.unlinkSync(path.join(__dirname, `../uploads/${image.path}`));
+        fs.unlink(path.join(__dirname, `../uploads/${image.path.split('/').pop()}`), (err) => {
+            if (err) {
+                console.error(err)
+                return
+            }
+        }
+        );
         res.send({ success: true, image });
     } catch (error) {
         res.send({ success: false, error });

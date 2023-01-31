@@ -87,8 +87,8 @@ const SidebarContent = ({ onClose, ...rest }) => {
             pos="fixed"
             h="full"
             {...rest}>
-            <Flex h="20" alignItems="center" mx="8" justifyContent="space-between">
-                <Image src="https://edutalks.biz/wp-content/uploads/2020/02/Edu-Talks-Logo.png" alt='logo' width={180} />
+            <Flex h="60" alignItems="center" mx="8" justifyContent="space-between">
+                <Image src="https://lh3.googleusercontent.com/6qFGtbnRBDXLn8kZDV9_a18qweW6BAlIfniMRqZ3Zs46TDmvcWXTGfhhi1qTXtFjPw=w300" alt='logo' width={180} />
                 <CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClose} />
             </Flex>
             {LinkItems.map((link, index) => (
