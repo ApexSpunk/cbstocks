@@ -39,7 +39,7 @@ app.get('/', async (req, res) => {
     try {
         const images = await Image.find(query).skip(skip).limit(limit);
         const updatedImages = images.map(image => {
-            image.path = `http://65.20.70.117:8000/uploads/${image.path}`;
+            image.path = `https://cb.techrapid.in/uploads/${image.path}`;
             return image;
         });
         res.send({ success: true, images });
