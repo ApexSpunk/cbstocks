@@ -23,18 +23,29 @@ app.get('/test', (req, res) => {
     res.send({ message: 'Welcome to cbstockssdfds' });
 });
 
-// use sharp to resize image and make uploads folder public and accessible
-app.use('/uploads', express.static('uploads'));
-app.use('/resized', express.static('resized'));
-app.get('/resize', async (req, res) => {
-    const { width, height, filename } = req.query;
-    const path = `uploads/${filename}`;
-    const resizedPath = `resized/${filename}`;
-    await sharp(path)
-        .resize(width, height)
-        .toFile(resizedPath);
-    res.send({ success: true, path: resizedPath });
+
+// return the image in the requested size and maintain the aspect ratio of the original image without storing the resized image
+app.get('/uploads/:image', async (req, res) => {
+    const { image } = req.params;
+    const { width } = req.query;
+    const path = `uploads/${image}`;
+    try {
+        if (width) {
+            const buffer = await sharp(path).resize(parseInt(width)).toBuffer();
+            res.set('Content-Type', 'image/jpeg');
+            return res.send(buffer);
+        }else{
+            const buffer = await sharp(path).toBuffer();
+            res.set('Content-Type', 'image/jpeg');
+            return res.send(buffer);
+        }
+    } catch (error) {
+        res.send({ success: false, error });
+    }
 });
+
+
+
 
 
 
