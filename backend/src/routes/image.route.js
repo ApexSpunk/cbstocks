@@ -42,7 +42,7 @@ app.get('/', async (req, res) => {
             image.path = `https://cb.techrapid.in/uploads/${image.path}`;
             return image;
         });
-        res.send({ success: true, images: updatedImages });
+        res.send({ success: true, images });
     } catch (error) {
         res.send({ success: false, error });
     }
