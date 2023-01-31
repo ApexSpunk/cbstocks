@@ -30,7 +30,7 @@ function images({ images }) {
 
     const handleDelete = async (id) => {
         setLoading(true)
-        const res = fetch(`http://65.20.70.117:8000/image/${id}`, {
+        const res = fetch(`https://cb.techrapid.in/image/${id}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json'
@@ -61,7 +61,7 @@ function images({ images }) {
 
     const getImages = async () => {
         setLoading(true)
-        const res = await fetch('http://65.20.70.117:8000/image')
+        const res = await fetch('https://cb.techrapid.in/image')
         const { images } = await res.json()
         setData(images)
         setLoading(false)

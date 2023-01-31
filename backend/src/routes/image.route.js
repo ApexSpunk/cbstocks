@@ -2,7 +2,6 @@ const express = require('express');
 const app = express.Router();
 const Image = require('../models/image');
 const multer  = require('multer');
-// make mime type unchanged after uploading
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, 'uploads/')

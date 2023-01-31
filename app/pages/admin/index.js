@@ -31,10 +31,6 @@ import {
     FiChevronDown,
     FiImage
 } from 'react-icons/fi';
-import { IconType } from 'react-icons';
-import { ReactText } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { useEffect } from 'react';
 import Link from 'next/link';
 import { signOut } from 'next-auth/react';
 
