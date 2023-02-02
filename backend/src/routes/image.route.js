@@ -27,10 +27,10 @@ app.get('/', async (req, res) => {
         query.category = category;
     }
     if (color) {
-        query.color = color;
+        query.colors = { $in: [color] };
     }
     if (tag) {
-        query.tags = tag;
+        query.tags = { $in: [tag] };
     }
     if (search) {
         query.name = { $regex: search, $options: 'i' };
