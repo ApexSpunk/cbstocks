@@ -28,14 +28,18 @@ app.get('/test', (req, res) => {
 
 app.get('/uploads/:image', async (req, res) => {
     const { image } = req.params;
-    const { width } = req.query;
+    const { width, height } = req.query;
     const path = `uploads/${image}`;
     try {
-        if (width) {
+        if (width && height) {
+            const buffer = await sharp(path).resize(parseInt(width), parseInt(height)).toBuffer();
+            res.set('Content-Type', 'image/jpeg');
+            res.send(buffer);
+        } else if (width) {
             const buffer = await sharp(path).resize(parseInt(width)).toBuffer();
             res.set('Content-Type', 'image/jpeg');
             return res.send(buffer);
-        }else{
+        } else {
             const buffer = await sharp(path).toBuffer();
             res.set('Content-Type', 'image/jpeg');
             return res.send(buffer);
