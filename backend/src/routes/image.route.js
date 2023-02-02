@@ -13,7 +13,6 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 
-
 const fs = require('fs');
 const path = require('path');
 
@@ -36,7 +35,7 @@ app.get('/', async (req, res) => {
         query.name = { $regex: search, $options: 'i' };
     }
     try {
-        const images = await Image.find(query).skip(skip).limit(limit).populate({ path: 'category', select: { name: 1, image: 1, likes: 1 } }).populate({ path: 'colors', select: { name: 1, code: 1 } }).populate({ path: 'tags', select: { name: 1 } });
+        const images = await Image.find(query).sort({ downloads: -1, likes: -1, views: -1 }).skip(skip).limit(limit).populate({ path: 'category', select: { name: 1, image: 1, likes: 1 } }).populate({ path: 'colors', select: { name: 1, code: 1 } }).populate({ path: 'tags', select: { name: 1 } });
         images.map(image => {
             image.path = `https://cb.techrapid.in/uploads/${image.path}`;
             return image;
@@ -47,6 +46,17 @@ app.get('/', async (req, res) => {
         res.send({ success: false, error });
     }
 });
+
+app.post('/download/:id', async (req, res) => {
+    const { id } = req.params;
+    try {
+        const image = await Image.findByIdAndUpdate(id, { $inc: { downloads: 1 } }, { new: true });
+        res.send({ success: true, message: 'Downloaded' });
+    } catch (error) {
+        console.log(error);
+    }
+});
+
 
 app.get('/:id', async (req, res) => {
     const { id } = req.params;
