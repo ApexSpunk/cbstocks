@@ -11,7 +11,7 @@ const storage = multer.diskStorage({
         cb(null, 'uploads/');
     }
 });
-const upload = multer({ storage: storage });
+const upload = multer({ storage: storage, limits: { fileSize: 50 * 1024 * 1024 } });
 const allowedOrigins = ['http://localhost:3000', 'https://cbstocks.netlify.app', 'https://cbstocks.netlify.app/'];
 const corsOptions = {
     origin: (origin, callback) => {
