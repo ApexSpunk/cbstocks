@@ -176,7 +176,7 @@ function images({ images, categories, tags, colors }) {
                                                             </Flex>
                                                             <Text fontSize='md' fontWeight='semibold'>{course.name}</Text>
                                                             <Flex alignItems='center' gap='2' flexWrap='wrap' justifyContent='space-between'>
-                                                                <Text fontSize='sm' fontWeight='semibold' color='gray.500'>Category: {course.category.name}</Text>
+                                                                <Text fontSize='sm' fontWeight='semibold' color='gray.500'>Category: {course?.category?.name}</Text>
                                                                 <Flex alignItems='center' gap='2'>
                                                                     {
                                                                         course.colors.map((color, index) => <Box key={index} w='20px' h='20px' borderRadius='full' bg={color.code} />)
