@@ -2,6 +2,7 @@ const express = require('express');
 const app = express.Router();
 const Image = require('../models/image');
 const multer = require('multer');
+const cors = require('cors');
 const storage = multer.diskStorage({
     filename: function (req, file, cb) {
         cb(null, Date.now() + file.originalname);
