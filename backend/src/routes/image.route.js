@@ -12,18 +12,6 @@ const storage = multer.diskStorage({
     }
 });
 const upload = multer({ storage: storage, limits: { fileSize: 50 * 1024 * 1024, fieldSize: 100 * 1024 * 1024 } });
-const allowedOrigins = ['http://localhost:3000', 'https://cbstocks.netlify.app', 'https://cbstocks.netlify.app/'];
-const corsOptions = {
-    origin: (origin, callback) => {
-        if (allowedOrigins.indexOf(origin) !== -1) {
-            callback(null, true);
-        } else {
-            callback(new Error('Not allowed by CORS'));
-        }
-    },
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-};
 
 
 const fs = require('fs');
@@ -84,7 +72,7 @@ app.get('/:id', async (req, res) => {
     }
 });
 
-app.post('/upload', cors(corsOptions), upload.any('images'), async (req, res) => {
+app.post('/upload', upload.any('images'), async (req, res) => {
     const { name, category, tags, colors } = req.body;
     const files = req.files;
     try {

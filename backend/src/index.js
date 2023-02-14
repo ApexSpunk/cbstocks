@@ -10,20 +10,6 @@ const tagRoute = require('./routes/tags.route');
 const sharp = require('sharp');
 
 
-
-const allowedOrigins = ['http://localhost:3000', 'https://cbstocks.netlify.app', 'https://cbstocks.netlify.app/'];
-const corsOptions = {
-    origin: (origin, callback) => {
-        if (allowedOrigins.indexOf(origin) !== -1) {
-            callback(null, true);
-        } else {
-            callback(new Error('Not allowed by CORS'));
-        }
-    },
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-};
-
 const app = express();
 app.use(express.json());
 app.use(cors());
@@ -31,16 +17,6 @@ app.use('/category', categoryRoute);
 app.use('/image', imageRoute);
 app.use('/color', colorRoute);
 app.use('/tags', tagRoute);
-app.options('/upload', cors(corsOptions));
-
-const timeout = 300000;
-app.use((req, res, next) => {
-    res.setTimeout(timeout, () => {
-        console.log('Request has timed out.');
-        res.send(408);
-    });
-    next();
-});
 
 app.get('/', (req, res) => {
     res.send({ message: 'Welcome to cbstocks' });
