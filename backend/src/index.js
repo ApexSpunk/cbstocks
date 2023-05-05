@@ -14,18 +14,13 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 app.use('/category', categoryRoute);
-app.use('/image', imageRoute);
+app.use('/images', imageRoute);
 app.use('/color', colorRoute);
 app.use('/tags', tagRoute);
 
 app.get('/', (req, res) => {
-    res.send({ message: 'Welcome to cbstocks' });
+    res.send({ message: 'Welcome to Techrapid' });
 });
-
-app.get('/test', (req, res) => {
-    res.send({ message: 'Welcome to cbstockssdfds' });
-});
-
 
 app.get('/uploads/:image', async (req, res) => {
     const { image } = req.params;
