@@ -16,7 +16,7 @@ const storage = multer.diskStorage({
         cb(null, Date.now() + file.originalname);
     },
     destination: function (req, file, cb) {
-        cb(null, '../../uploads/');
+        cb(null, 'image/');
     }
 });
 
@@ -43,7 +43,7 @@ app.get('/', async (req, res) => {
     try {
         const images = await Image.find(query).sort({ downloads: -1, likes: -1, views: -1 }).skip(skip).limit(limit).populate({ path: 'category', select: { name: 1, image: 1, likes: 1 } }).populate({ path: 'colors', select: { name: 1, code: 1 } }).populate({ path: 'tags', select: { name: 1 } });
         images.map(image => {
-            image.path = `https://cb.techrapid.in/uploads/${image.path}`;
+            image.path = `https://images.techrapid.in/image/${image.path}`;
             return image;
         });
         res.send({ success: true, images });
@@ -70,7 +70,7 @@ app.get('/:id', async (req, res) => {
         const image = await Image.findOne({ _id: id }).populate({ path: 'category', select: { name: 1, image: 1, likes: 1 } }).populate({ path: 'colors', select: { name: 1, code: 1 } }).populate({ path: 'tags', select: { name: 1 } });
         image.views = image.views + 1;
         await image.save();
-        image.path = `https://cb.techrapid.in/uploads/${image.path}`;
+        image.path = `https://images.techrapid.in/image/${image.path}`;
         res.send({ success: true, image });
     } catch (error) {
         res.send({ success: false, error });
@@ -148,7 +148,7 @@ app.delete('/:id', async (req, res) => {
     const { id } = req.params;
     try {
         const image = await Image.findByIdAndDelete(id);
-        fs.unlinkSync(path.join(__dirname, `../../../../uploads/${image?.image?.url}`));
+        fs.unlinkSync(path.join(__dirname, `../../image/${image?.image?.url}`));
         res.send({ success: true, image });
     } catch (error) {
         console.log(error);
