@@ -3,19 +3,24 @@ const app = express.Router();
 const Image = require('../models/image');
 const multer = require('multer');
 const cors = require('cors');
+const sizeOf = require('image-size');
+const slugify = require('slugify');
+const fs = require('fs');
+const path = require('path');
+const util = require('util');
+const unlinkFile = util.promisify(fs.unlink);
+const randomstring = require('randomstring');
+
 const storage = multer.diskStorage({
     filename: function (req, file, cb) {
         cb(null, Date.now() + file.originalname);
     },
     destination: function (req, file, cb) {
-        cb(null, 'uploads/');
+        cb(null, '../../uploads/');
     }
 });
+
 const upload = multer({ storage: storage, limits: { fileSize: 50 * 1024 * 1024, fieldSize: 100 * 1024 * 1024 } });
-
-
-const fs = require('fs');
-const path = require('path');
 
 app.get('/', async (req, res) => {
     let { page, limit, category, color, tag, search } = req.query;
@@ -73,22 +78,48 @@ app.get('/:id', async (req, res) => {
 });
 
 app.post('/upload', upload.any('images'), async (req, res) => {
-    const { name, category, tags, colors } = req.body;
+    let { title, description, uploadedBy, altText, category, tags, colors, keywords } = req.body;
     const files = req.files;
+    if (keywords) {
+        var newTitle = title + ' ' + keywords[Math.floor(Math.random() * keywords.length)]
+    } else {
+        var newTitle = title
+    }
     try {
         const images = files.map(file => {
-            const { filename, originalname } = file;
-            const image = new Image({ name: name || originalname, path: filename, category, tags, colors });
-            image.save().then(image => {
-                image.path = `https://cb.techrapid.in/uploads/${image.path}`;
+            const { filename } = file;
+            const dimensions = sizeOf(file.path);
+            const randomChars = randomstring.generate({
+                length: 6,
+                charset: 'alphanumeric',
+                capitalization: 'lowercase',
             });
+            const image = {
+                title,
+                description,
+                image: {
+                    url: filename,
+                    size: `${dimensions.width}x${dimensions.height}`,
+                    fileSize: `${(file.size / 1024).toFixed(2)} KB`,
+                    resolution: dimensions.width * dimensions.height > 3840 * 2160 ? '8k' : dimensions.width * dimensions.height > 1920 * 1080 ? '4k' : dimensions.width * dimensions.height > 1280 * 720 ? '2k' : '1080',
+                },
+                category,
+                tags,
+                colors,
+                uploadedBy,
+                altText,
+                slug: slugify(newTitle, { lower: true, remove: /[*+~.()'"!:@]/g }) + '-' + randomChars,
+            };
             return image;
         });
-        res.send({ success: true, images });
+        const imagesSaved = await Image.insertMany(images);
+        res.send({ success: true, images: imagesSaved });
     } catch (error) {
+        await Promise.all(files.map(file => unlink(file.path))); // Delete the files if there's an error
         res.send({ success: false, error });
     }
 });
+
 
 app.post('/like/:id', async (req, res) => {
     const { id } = req.params;
@@ -117,7 +148,7 @@ app.delete('/:id', async (req, res) => {
     const { id } = req.params;
     try {
         const image = await Image.findByIdAndDelete(id);
-        fs.unlinkSync(path.join(__dirname, `../../uploads/${image.path}`));
+        fs.unlinkSync(path.join(__dirname, `../../../../uploads/${image?.image?.url}`));
         res.send({ success: true, image });
     } catch (error) {
         console.log(error);
