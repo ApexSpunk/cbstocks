@@ -46,7 +46,6 @@ app.get('/', async (req, res) => {
             image.image.url = `https://images.techrapid.in/image/${image.image.url}`;
             return image;
         });
-        console.log(images);
         res.send({ success: true, images });
     } catch (error) {
         console.log(error);

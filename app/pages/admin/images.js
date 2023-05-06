@@ -8,7 +8,7 @@ import { DeleteIcon } from '@chakra-ui/icons'
 
 
 export async function getServerSideProps() {
-    const res = await fetch('http://localhost:3000/images')
+    const res = await fetch('https://images.techrapid.in/images?limit=100')
     const cate = await fetch('https://images.techrapid.in/category')
     const tag = await fetch('https://images.techrapid.in/tags')
     const colo = await fetch('https://images.techrapid.in/color')
@@ -160,7 +160,7 @@ function images({ images, categories, tags, colors }) {
                                             </GridItem>) : data?.map((course, index) =>
                                                 <GridItem colSpan={1} key={index} >
                                                     <Box borderRadius='lg' boxShadow={'md'} bg='white'>
-                                                        <Image src={course.path} roundedTop={'lg'} h={'180px'} w='100%' objectFit='cover' />
+                                                        <Image src={course.image.url} roundedTop={'lg'} h={'180px'} w='100%' objectFit='cover' />
                                                         <Box p='4'>
                                                             <Flex alignItems='center' justifyContent='space-between'>
                                                                 <Flex alignItems='center' gap='2'>
