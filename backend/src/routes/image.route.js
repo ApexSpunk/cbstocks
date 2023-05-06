@@ -16,7 +16,12 @@ const storage = multer.diskStorage({
     filename: function (req, file, cb) {
         const { title } = req.body; // Get the title from the request body
         const { originalname } = file;
-        const slug = slugify(title, { lower: true, remove: /[*+~.()'"!:@]/g }); // Generate the slug from the title
+        const randomChars = randomstring.generate({
+            length: 6,
+            charset: 'alphanumeric',
+            capitalization: 'lowercase',
+        });
+        const slug = slugify(title, { lower: true, remove: /[*+~.()'"!:@]/g }) + '-' + randomChars;
         cb(null, slug + path.extname(originalname)); // Use the slug as the filename
     },
     destination: function (req, file, cb) {
