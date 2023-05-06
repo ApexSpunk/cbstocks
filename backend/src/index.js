@@ -22,10 +22,10 @@ app.get('/', (req, res) => {
     res.send({ message: 'Welcome to Techrapid' });
 });
 
-app.get('/uploads/:image', async (req, res) => {
+app.get('/image/:image', async (req, res) => {
     const { image } = req.params;
     const { width, height } = req.query;
-    const path = `uploads/${image}`;
+    const path = `image/${image}`;
     try {
         if (width && height) {
             const buffer = await sharp(path).resize(parseInt(width), parseInt(height)).toBuffer();
