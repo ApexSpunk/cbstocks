@@ -12,9 +12,9 @@ const corsOptions = {
     origin: 'https://cbstocks.netlify.app',
 };
 
+const app = express();
 app.use(cors(corsOptions));
 
-const app = express();
 app.use(cors());
 app.use('/category', categoryRoute);
 app.use('/images', imageRoute);
