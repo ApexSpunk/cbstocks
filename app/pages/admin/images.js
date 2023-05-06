@@ -8,10 +8,10 @@ import { DeleteIcon } from '@chakra-ui/icons'
 
 
 export async function getServerSideProps() {
-    const res = await fetch('https://cb.techrapid.in/image?limit=100')
-    const cate = await fetch('https://cb.techrapid.in/category')
-    const tag = await fetch('https://cb.techrapid.in/tags')
-    const colo = await fetch('https://cb.techrapid.in/color')
+    const res = await fetch('http://localhost:3000/images')
+    const cate = await fetch('https://images.techrapid.in/category')
+    const tag = await fetch('https://images.techrapid.in/tags')
+    const colo = await fetch('https://images.techrapid.in/color')
     const { images } = await res.json()
     const { categories } = await cate.json()
     const { tags } = await tag.json()
@@ -35,7 +35,7 @@ function images({ images, categories, tags, colors }) {
 
     const handleDelete = async (id) => {
         setLoading(true)
-        const res = fetch(`https://cb.techrapid.in/image/${id}`, {
+        const res = fetch(`https://images.techrapid.in/images/${id}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json'
@@ -66,7 +66,7 @@ function images({ images, categories, tags, colors }) {
 
     const getImages = async () => {
         setLoading(true)
-        const res = await fetch('https://cb.techrapid.in/image')
+        const res = await fetch('https://images.techrapid.in/images')
         const { images } = await res.json()
         setData(images)
         setLoading(false)
@@ -95,7 +95,7 @@ function images({ images, categories, tags, colors }) {
         course.colors.forEach(color => {
             body.append('colors', color);
         });
-        const res = await fetch('https://cb.techrapid.in/image/upload', {
+        const res = await fetch('https://images.techrapid.in/images/upload', {
             method: 'POST',
             body
         })
@@ -123,6 +123,7 @@ function images({ images, categories, tags, colors }) {
     }
 
 
+    console.log(data);
 
 
     return (
