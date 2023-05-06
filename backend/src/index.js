@@ -8,10 +8,13 @@ const imageRoute = require('./routes/image.route');
 const colorRoute = require('./routes/color.route');
 const tagRoute = require('./routes/tags.route');
 const sharp = require('sharp');
+const corsOptions = {
+    origin: 'https://cbstocks.netlify.app',
+};
 
+app.use(cors(corsOptions));
 
 const app = express();
-app.use(express.json());
 app.use(cors());
 app.use('/category', categoryRoute);
 app.use('/images', imageRoute);
