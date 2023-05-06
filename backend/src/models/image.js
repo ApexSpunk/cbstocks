@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const imageSchema = new mongoose.Schema({
     title: { type: String, required: true },
-    description: { type: String, required: true },
+    description: { type: String },
     image: { type: { url: String, size: String, fileSize: String, resolution: String }, required: true },
     likes: { type: Number, default: 0 },
     downloads: { type: Number, default: 0 },
@@ -11,7 +11,7 @@ const imageSchema = new mongoose.Schema({
     colors: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Color' }],
     tags: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Tag' }],
     uploadedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
-    altText: { type: String, required: true },
+    altText: { type: String },
     slug: { type: String, required: true, unique: true },
     keywords: [{ type: String }],
 }, { timestamps: true });

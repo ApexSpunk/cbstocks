@@ -10,15 +10,20 @@ const path = require('path');
 const util = require('util');
 const unlinkFile = util.promisify(fs.unlink);
 const randomstring = require('randomstring');
+const { unlink } = require('fs').promises;
 
 const storage = multer.diskStorage({
     filename: function (req, file, cb) {
-        cb(null, Date.now() + file.originalname);
+        const { title } = req.body; // Get the title from the request body
+        const { originalname } = file;
+        const slug = slugify(title, { lower: true, remove: /[*+~.()'"!:@]/g }); // Generate the slug from the title
+        cb(null, slug + path.extname(originalname)); // Use the slug as the filename
     },
     destination: function (req, file, cb) {
         cb(null, 'image/');
     }
 });
+
 
 const upload = multer({ storage: storage, limits: { fileSize: 50 * 1024 * 1024, fieldSize: 100 * 1024 * 1024 } });
 

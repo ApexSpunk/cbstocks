@@ -84,7 +84,7 @@ function images({ images, categories, tags, colors }) {
     const addImage = async () => {
         setLoading(true);
         const body = new FormData();
-        body.append('name', course.name);
+        body.append('title', course.name);
         course.images.forEach(image => {
             body.append('images', image);
         });
@@ -95,11 +95,12 @@ function images({ images, categories, tags, colors }) {
         course.colors.forEach(color => {
             body.append('colors', color);
         });
-        const res = await fetch('https://images.techrapid.in/images/upload', {
+        const res = await fetch('http://localhost:3000/images/upload', {
             method: 'POST',
             body
         })
         const { success, images: imgs } = await res.json()
+        console.log(imgs,success);
         if (success) {
             toast({
                 title: "Image added.",
@@ -121,9 +122,6 @@ function images({ images, categories, tags, colors }) {
         }
         getImages()
     }
-
-
-    console.log(data);
 
 
     return (
