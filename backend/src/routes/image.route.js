@@ -77,7 +77,7 @@ app.post('/download/:id', async (req, res) => {
 app.get('/:id', async (req, res) => {
     const { id } = req.params;
     try {
-        const image = await Image.findOne({ _id: id }).populate({ path: 'category', select: { name: 1, image: 1, likes: 1 } }).populate({ path: 'colors', select: { name: 1, code: 1 } }).populate({ path: 'tags', select: { name: 1 } });
+        const image = await Image.findOne({ slug: id }).populate({ path: 'category', select: { name: 1, image: 1, likes: 1 } }).populate({ path: 'colors', select: { name: 1, code: 1 } }).populate({ path: 'tags', select: { name: 1 } });
         image.views = image.views + 1;
         await image.save();
         image.path = `https://images.techrapid.in/image/${image.path}`;
