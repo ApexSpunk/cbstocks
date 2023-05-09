@@ -9,7 +9,7 @@ const colorRoute = require('./routes/color.route');
 const tagRoute = require('./routes/tags.route');
 const sharp = require('sharp');
 const corsOptions = {
-    origin: 'https://cbstocks.netlify.app',
+    origin: '*',
 };
 
 const app = express();
