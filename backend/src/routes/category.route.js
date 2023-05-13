@@ -17,7 +17,7 @@ app.get('/', async (req, res) => {
     try {
         const categories = await Category.find();
         categories.map(category => {
-            category.image = `https://images.techrapid.in/${category.image}`;
+            category.image = `https://images.techrapid.in/image/${category.image}`;
         });
         res.send({ success: true, categories });
     } catch (error) {
