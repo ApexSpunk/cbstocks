@@ -9,7 +9,7 @@ import { DeleteIcon } from '@chakra-ui/icons'
 
 
 export async function getServerSideProps() {
-    const res = await fetch('https://cb.techrapid.in/tags')
+    const res = await fetch('https://images.techrapid.in/tags')
     const { tags } = await res.json()
     return {
         props: {
@@ -33,7 +33,7 @@ function images({ data }) {
     const addTag = async () => {
         setLoading(true);
         try {
-            const res = await fetch('https://cb.techrapid.in/tags', {
+            const res = await fetch('https://images.techrapid.in/tags', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -105,7 +105,7 @@ function images({ data }) {
                                                             <Td>
                                                                 <Button onClick={() => {
                                                                     setLoading(true);
-                                                                    fetch(`https://cb.techrapid.in/tags/${tag._id}`, {
+                                                                    fetch(`https://images.techrapid.in/tags/${tag._id}`, {
                                                                         method: 'DELETE'
                                                                     }).then(() => {
                                                                         setTags(tags.filter((item) => item._id !== tag._id));

@@ -10,7 +10,7 @@ import { FiCloudOff } from 'react-icons/fi'
 
 
 export async function getServerSideProps() {
-    const res = await fetch('https://cb.techrapid.in/color')
+    const res = await fetch('https://images.techrapid.in/color')
     const { colors } = await res.json()
     return {
         props: {
@@ -27,14 +27,24 @@ function images({ data }) {
     const [query, setQuery] = React.useState('update');
     const toast = useToast();
 
-    const [color, setColor] = React.useState({ name: '', code: '' });
+    const [color, setColor] = React.useState({ name: '', code: '', image: [] });
     const [colors, setColors] = React.useState(data);
+
+    const handleImages = (e) => {
+        const files = e.target.files;
+        const images = [];
+        for (let i = 0; i < files.length; i++) {
+            images.push(files[i]);
+        }
+        setColor({ ...color, image: images });
+    }
+
 
 
     const addColor = async () => {
         setLoading(true);
         try {
-            const res = await fetch('https://cb.techrapid.in/color', {
+            const res = await fetch('https://images.techrapid.in/color', {
                 method: 'POST',
                 body: JSON.stringify(color),
                 headers: {
@@ -104,7 +114,7 @@ function images({ data }) {
                                                                 </Button>
                                                                 <Button colorScheme={'red'} size='sm' onClick={() => {
                                                                     setLoading(true);
-                                                                    fetch(`https://cb.techrapid.in/color/${color._id}`, {
+                                                                    fetch(`https://images.techrapid.in/color/${color._id}`, {
                                                                         method: 'DELETE'
                                                                     }).then(res => res.json()).then(data => {
                                                                         setColors(colors.filter(el => el._id !== color._id));
@@ -141,6 +151,10 @@ function images({ data }) {
                             <InputGroup>
                                 <InputLeftElement pointerEvents='none' children={<FaAdjust />} />
                                 <Input type='text' placeholder='Color Name' value={color.name} onChange={(e) => setColor({ ...color, name: e.target.value })} />
+                            </InputGroup>
+                            <InputGroup mt='4'>
+                                <InputLeftElement pointerEvents='none' children={<FaImage />} />
+                                <Input type='file' placeholder='Color Image' onChange={handleImages} />
                             </InputGroup>
                             <InputGroup mt='4'>
                                 <InputLeftElement pointerEvents='none' children={<FiCloudOff />} />
