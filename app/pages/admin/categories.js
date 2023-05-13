@@ -44,7 +44,7 @@ function images({ data }) {
         const body = new FormData();
         body.append('name', category.name);
         category.image.map(image => body.append('image', image));
-        const res = await fetch('https://images.techrapid.incategory', {
+        const res = await fetch('https://images.techrapid.in/category', {
             method: 'POST',
             body
         });
