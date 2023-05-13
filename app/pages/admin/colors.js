@@ -101,7 +101,8 @@ function images({ data }) {
                                                 </Box>
                                             </GridItem>) : colors.map((color, index) => <GridItem colSpan={1} key={index} >
                                                 <Box borderRadius='lg' boxShadow={'md'} bg='white'>
-                                                    <Box h={'50px'} bg={`#$Done{color.code}`} roundedTop={'lg'} />
+                                                    <Box h={'50px'} bg={`#${color.code}`} roundedTop={'lg'} />
+                                                    {/* <Image src={`https://images.techrapid.in/image/${color?.image[0]}`} alt={color.name} objectFit='cover' h={'180px'} roundedTop={'lg'} /> */}
                                                     <Box p='4'>
                                                         <Flex alignItems='center' gap='2' mt='2'>
                                                             <Text fontSize='xl' fontWeight='semibold'>{color.name}</Text>
@@ -154,7 +155,7 @@ function images({ data }) {
                             </InputGroup>
                             <InputGroup mt='4'>
                                 <InputLeftElement pointerEvents='none' children={<FaImage />} />
-                                <Input type='file' placeholder='Color Image' onChange={handleImages} />
+                                <Input type='file' placeholder='Color Image' multiple onChange={handleImages} />
                             </InputGroup>
                             <InputGroup mt='4'>
                                 <InputLeftElement pointerEvents='none' children={<FiCloudOff />} />
