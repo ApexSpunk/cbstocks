@@ -117,7 +117,7 @@ app.post('/upload', upload.any('images'), async (req, res) => {
                 tags,
                 colors,
                 uploadedBy,
-                altText,
+                altText: title,
                 slug: slugify(newTitle, { lower: true, remove: /[*+~.()'"!:@]/g }) + '-' + randomChars,
             };
             return image;
