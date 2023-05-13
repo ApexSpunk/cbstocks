@@ -101,7 +101,7 @@ function images({ data }) {
                                                 </Box>
                                             </GridItem>) : colors.map((color, index) => <GridItem colSpan={1} key={index} >
                                                 <Box borderRadius='lg' boxShadow={'md'} bg='white'>
-                                                    <Box h={'50px'} bg={color.code} roundedTop={'lg'} />
+                                                    <Box h={'50px'} bg={`#$Done{color.code}`} roundedTop={'lg'} />
                                                     <Box p='4'>
                                                         <Flex alignItems='center' gap='2' mt='2'>
                                                             <Text fontSize='xl' fontWeight='semibold'>{color.name}</Text>
