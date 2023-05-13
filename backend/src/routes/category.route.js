@@ -2,12 +2,25 @@ const express = require('express');
 const app = express.Router();
 const Category = require('../models/category');
 const multer = require('multer');
+const randomstring = require('randomstring');
+const slugify = require('slugify');
+const path = require('path');
+
+
 const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, 'uploads/')
-    },
     filename: function (req, file, cb) {
-        cb(null, file.originalname)
+        const { name } = req.body; // Get the title from the request body
+        const { originalname } = file;
+        const randomChars = randomstring.generate({
+            length: 6,
+            charset: 'alphanumeric',
+            capitalization: 'lowercase',
+        });
+        const slug = slugify(name, { lower: true, remove: /[*+~.()'"!:@]/g }) + '-' + randomChars;
+        cb(null, slug + path.extname(originalname)); // Use the slug as the filename
+    },
+    destination: function (req, file, cb) {
+        cb(null, 'image/category/');
     }
 });
 const upload = multer({ storage: storage });
@@ -16,20 +29,21 @@ const upload = multer({ storage: storage });
 app.get('/', async (req, res) => {
     try {
         const categories = await Category.find();
-        categories.map(category => {
-            category.image = `https://images.techrapid.in/image/${category.image}`;
-        });
         res.send({ success: true, categories });
     } catch (error) {
         res.send({ success: false, error });
     }
 });
 
-app.post('/', upload.single('image'), async (req, res) => {
+app.post('/', upload.any('image'), async (req, res) => {
     const { name } = req.body;
-    const { path } = req.file;
+    const files = req.files;
     try {
-        const category = await Category.create({ name, image: path });
+        const image = files.map(file => {
+            const { filename } = file;
+            return filename;
+        });
+        const category = await Category.create({ name, image });
         res.send({ success: true, category });
     } catch (error) {
         res.send({ success: false, error });

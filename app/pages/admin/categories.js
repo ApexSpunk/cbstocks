@@ -9,7 +9,7 @@ import { DeleteIcon } from '@chakra-ui/icons'
 
 
 export async function getServerSideProps() {
-    const res = await fetch('https://cb.techrapid.in/category')
+    const res = await fetch('https://images.techrapid.in/category')
     const { categories } = await res.json()
     return {
         props: {
@@ -21,6 +21,7 @@ export async function getServerSideProps() {
 
 
 function images({ data }) {
+    console.log(data);
     const [loading, setLoading] = React.useState(false);
     const { isOpen, onOpen, onClose } = useDisclosure();
     const [query, setQuery] = React.useState('update');
@@ -29,13 +30,22 @@ function images({ data }) {
     const [category, setCategory] = React.useState({ name: '', image: '' });
     const [categories, setCategories] = React.useState(data);
 
+    const handleImages = (e) => {
+        const files = e.target.files;
+        const images = [];
+        for (let i = 0; i < files.length; i++) {
+            images.push(files[i]);
+        }
+        setCategory({ ...category, image: images });
+    }
+
 
     const addCategory = async () => {
         setLoading(true);
         const body = new FormData();
         body.append('name', category.name);
-        body.append('image', category.image);
-        const res = await fetch('https://cb.techrapid.in/category', {
+        category.image.map(image => body.append('image', image));
+        const res = await fetch('https://images.techrapid.in/category', {
             method: 'POST',
             body
         });
@@ -86,7 +96,9 @@ function images({ data }) {
                                                 </Box>
                                             </GridItem>) : categories.map((category, index) => <GridItem colSpan={1} key={index} >
                                                 <Box borderRadius='lg' boxShadow={'md'} bg='white'>
-                                                    <Image src={category.image} roundedTop={'lg'} h={'180px'} w='100%' objectFit='cover' />
+                                                    <Grid templateColumns="repeat(2, 1fr)" gap={1}>
+                                                        <Image src={`https://images.techrapid.in/image/category/${category.name}`} roundedTop={'lg'} w='100%' objectFit='cover' />
+                                                    </Grid>
                                                     <Box p='4'>
                                                         <Flex alignItems='center' gap='2' mt='2'>
                                                             <Text fontSize='xl' fontWeight='semibold'>{category.name}</Text>
@@ -99,7 +111,7 @@ function images({ data }) {
                                                                 </Button>
                                                                 <Button colorScheme={'red'} size='sm' onClick={() => {
                                                                     setLoading(true);
-                                                                    fetch(`https://cb.techrapid.in/category/${category._id}`, {
+                                                                    fetch(`https://images.techrapid.in/category/${category._id}`, {
                                                                         method: 'DELETE'
                                                                     }).then(res => res.json()).then(data => {
                                                                         setCategories(categories.filter(el => el._id !== category._id));
@@ -139,7 +151,7 @@ function images({ data }) {
                             </InputGroup>
                             <InputGroup mt='4'>
                                 <InputLeftElement pointerEvents='none' children={<FaImage />} />
-                                <Input type='file' placeholder='Category Image' onChange={(e) => setCategory({ ...category, image: e.target.files[0] })} />
+                                <Input type='file' placeholder='Category Image' multiple onChange={handleImages} />
                             </InputGroup>
                         </ModalHeader>
                         <ModalCloseButton />
