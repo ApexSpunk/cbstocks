@@ -31,7 +31,7 @@ function images({ images, categories, tags, colors }) {
     const toast = useToast();
 
 
-    const [course, setCourse] = React.useState({ name: '', images: [], category: '', tags: [], colors: [] });
+    const [course, setCourse] = React.useState({ name: '', images: [], category: '', tags: [], colors: [], description: '', keywords: [] });
 
     const handleDelete = async (id) => {
         setLoading(true)
@@ -225,6 +225,10 @@ function images({ images, categories, tags, colors }) {
                                     <Input type='text' placeholder='Image Name' value={course.name} onChange={(e) => setCourse({ ...course, name: e.target.value })} />
                                 </InputGroup>
                                 <InputGroup mt='4'>
+                                    <InputLeftElement pointerEvents='none' />
+                                    <Textarea placeholder='Description' value={course.description} onChange={(e) => setCourse({ ...course, description: e.target.value })} />
+                                </InputGroup>
+                                <InputGroup mt='4'>
                                     <Select placeholder='Select Category' value={course.category} onChange={(e) => setCourse({ ...course, category: e.target.value })}>
                                         {
                                             categories.map((category, index) => <option key={index} value={category._id}>{category.name}</option>)
@@ -235,7 +239,6 @@ function images({ images, categories, tags, colors }) {
                                     <InputLeftElement pointerEvents='none' children={<FaImages />} />
                                     <Input type='file' placeholder='Select Images' accept='image/*' multiple onChange={handleImages} />
                                 </InputGroup>
-
                                 <InputGroup mt='4'>
                                     <Select placeholder='Select Colors' onChange={(e) => course.colors.includes(e.target.value) ? null : setCourse({ ...course, colors: [...course.colors, e.target.value] })}>
                                         {
@@ -250,6 +253,10 @@ function images({ images, categories, tags, colors }) {
                                         }
                                     </Select>
                                 </InputGroup>
+                                <InputGroup mt='4'>
+                                    <InputLeftElement pointerEvents='none' children={<FaListUl />} />
+                                    <Input type='text' placeholder='Keywords' value={course.keywords} onChange={(e) => setCourse({ ...course, keywords: e.target.value.split(',') })} />
+                                </InputGroup>
                                 {
                                     course.colors && course.colors.length > 0 && <Flex mt='4' alignItems='center' gap='2'>
                                         <Text fontSize='md' fontWeight='semibold'>Colors:</Text>
@@ -263,6 +270,14 @@ function images({ images, categories, tags, colors }) {
                                         <Text fontSize='md' fontWeight='semibold'>Tags:</Text>
                                         {
                                             course.tags.map((tag, index) => <Badge key={index} colorScheme='green'>{tags.find((el) => el._id === tag).name}</Badge>)
+                                        }
+                                    </Flex>
+                                }
+                                {
+                                    course.keywords && course.keywords.length > 0 && <Flex mt='4' alignItems='center' gap='2'>
+                                        <Text fontSize='md' fontWeight='semibold'>Keywords:</Text>
+                                        {
+                                            course.keywords.map((keyword, index) => <Badge key={index} colorScheme='green'>{keyword}</Badge>)
                                         }
                                     </Flex>
                                 }
