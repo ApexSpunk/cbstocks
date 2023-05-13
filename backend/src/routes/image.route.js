@@ -122,12 +122,10 @@ app.post('/upload', upload.any('images'), async (req, res) => {
             };
             return image;
         });
-        console.log(images);
         const imagesSaved = await Image.insertMany(images);
         res.send({ success: true, images: imagesSaved });
     } catch (error) {
         await Promise.all(files.map(file => unlink(file.path))); // Delete the files if there's an error
-        console.log(error);
         res.send({ success: false, error });
     }
 });

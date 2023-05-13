@@ -95,12 +95,11 @@ function images({ images, categories, tags, colors }) {
         course.colors.forEach(color => {
             body.append('colors', color);
         });
-        const res = await fetch('https://images.techrapid.in/images/upload', {
+        const res = await fetch('http://localhost:3000/images/upload', {
             method: 'POST',
             body
         })
         const { success, images: imgs } = await res.json()
-        console.log(imgs,success);
         if (success) {
             toast({
                 title: "Image added.",

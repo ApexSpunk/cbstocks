@@ -16,7 +16,6 @@ const storage = multer.diskStorage({
             charset: 'alphanumeric',
             capitalization: 'lowercase',
         });
-        name = "category" + name;
         const slug = slugify(name, { lower: true, remove: /[*+~.()'"!:@]/g }) + '-' + randomChars;
         cb(null, slug + path.extname(originalname)); // Use the slug as the filename
     },
