@@ -95,7 +95,7 @@ function images({ images, categories, tags, colors }) {
         course.colors.forEach(color => {
             body.append('colors', color);
         });
-        const res = await fetch('http://localhost:3000/images/upload', {
+        const res = await fetch('https://images.techrapid.inimages/upload', {
             method: 'POST',
             body
         })
