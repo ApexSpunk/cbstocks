@@ -21,7 +21,6 @@ export async function getServerSideProps() {
 
 
 function images({ data }) {
-    console.log(data);
     const [loading, setLoading] = React.useState(false);
     const { isOpen, onOpen, onClose } = useDisclosure();
     const [query, setQuery] = React.useState('update');
@@ -97,7 +96,7 @@ function images({ data }) {
                                             </GridItem>) : categories.map((category, index) => <GridItem colSpan={1} key={index} >
                                                 <Box borderRadius='lg' boxShadow={'md'} bg='white'>
                                                     <Grid templateColumns="repeat(2, 1fr)" gap={1}>
-                                                        <Image src={`https://images.techrapid.in/image/category/${category.name}`} roundedTop={'lg'} w='100%' objectFit='cover' />
+                                                        <Image src={`https://images.techrapid.in/image/category/${category.image[0]}`} roundedTop={'lg'} w='100%' objectFit='cover' />
                                                     </Grid>
                                                     <Box p='4'>
                                                         <Flex alignItems='center' gap='2' mt='2'>

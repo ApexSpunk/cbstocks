@@ -48,6 +48,28 @@ app.get('/image/:image', async (req, res) => {
     }
 });
 
+app.get('/image/category/:image', async (req, res) => {
+    const { image } = req.params;
+    const { width, height } = req.query;
+    const path = `image/category/${image}`;
+    try {
+        if (width && height) {
+            const buffer = await sharp(path).resize(parseInt(width), parseInt(height)).toBuffer();
+            res.set('Content-Type', 'image/jpeg');
+        } else if (width) {
+            const buffer = await sharp(path).resize(parseInt(width)).toBuffer();
+            res.set('Content-Type', 'image/jpeg');
+        } else {
+            const buffer = await sharp(path).toBuffer();
+            res.set('Content-Type', 'image/jpeg');
+        }
+    } catch (error) {
+        res.send({ success: false, error });
+    }
+});
+
+
+
 
 
 app.listen(PORT, () => {
