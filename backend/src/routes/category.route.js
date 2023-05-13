@@ -16,11 +16,11 @@ const storage = multer.diskStorage({
             charset: 'alphanumeric',
             capitalization: 'lowercase',
         });
-        const slug = slugify(name, { lower: true, remove: /[*+~.()'"!:@]/g }) + '-' + randomChars;
+        const slug = slugify(`category-${name}`, { lower: true, remove: /[*+~.()'"!:@]/g }) + '-' + randomChars;
         cb(null, slug + path.extname(originalname)); // Use the slug as the filename
     },
     destination: function (req, file, cb) {
-        cb(null, 'image/category/');
+        cb(null, 'image/');
     }
 });
 const upload = multer({ storage: storage });
