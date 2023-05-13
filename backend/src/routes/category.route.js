@@ -9,14 +9,15 @@ const path = require('path');
 
 const storage = multer.diskStorage({
     filename: function (req, file, cb) {
-        const { name } = req.body; // Get the title from the request body
+        let { name } = req.body; // Get the title from the request body
         const { originalname } = file;
         const randomChars = randomstring.generate({
             length: 6,
             charset: 'alphanumeric',
             capitalization: 'lowercase',
         });
-        const slug = slugify(`category-${name}`, { lower: true, remove: /[*+~.()'"!:@]/g }) + '-' + randomChars;
+        name = "category" + name;
+        const slug = slugify(name, { lower: true, remove: /[*+~.()'"!:@]/g }) + '-' + randomChars;
         cb(null, slug + path.extname(originalname)); // Use the slug as the filename
     },
     destination: function (req, file, cb) {
