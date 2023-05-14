@@ -95,6 +95,10 @@ function images({ images, categories, tags, colors }) {
         course.colors.forEach(color => {
             body.append('colors', color);
         });
+        course.keywords.forEach(keyword => {
+            body.append('keywords', keyword);
+        });
+        body.append('description', course.description);
         const res = await fetch('https://images.techrapid.in/images/upload', {
             method: 'POST',
             body
