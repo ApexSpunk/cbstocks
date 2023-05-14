@@ -96,7 +96,10 @@ function images({ data }) {
                                             </GridItem>) : categories.map((category, index) => <GridItem colSpan={1} key={index} >
                                                 <Box borderRadius='lg' boxShadow={'md'} bg='white'>
                                                     <Grid templateColumns="repeat(2, 1fr)" gap={1}>
-                                                        <Image src={`https://images.techrapid.in/image/${category.image[0]}`} roundedTop={'lg'} w='100%' objectFit='cover' />
+                                                        <Image src={`https://images.techrapid.in/image/${category.image[0]}?width=250`} roundedTopLeft={'lg'} w='100%' maxH='100px' objectFit='cover' />
+                                                        <Image src={`https://images.techrapid.in/image/${category.image[1]}?width=250`} roundedTopRight={'lg'} w='100%' maxH='100px' objectFit='cover' />
+                                                        <Image src={`https://images.techrapid.in/image/${category.image[2]}?width=250`} roundedBottomLeft={'lg'} w='100%' maxH='100px' objectFit='cover' />
+                                                        <Image src={`https://images.techrapid.in/image/${category.image[3]}?width=250`} roundedBottomRight={'lg'} w='100%' maxH='100px' objectFit='cover' />
                                                     </Grid>
                                                     <Box p='4'>
                                                         <Flex alignItems='center' gap='2' mt='2'>

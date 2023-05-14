@@ -9,6 +9,7 @@ import { FiCloudOff } from 'react-icons/fi'
 
 
 
+
 export async function getServerSideProps() {
     const res = await fetch('https://images.techrapid.in/color')
     const { colors } = await res.json()
@@ -44,12 +45,13 @@ function images({ data }) {
     const addColor = async () => {
         setLoading(true);
         try {
+            const body = new FormData();
+            body.append('name', color.name);
+            body.append('code', color.code);
+            color.image.map(image => body.append('image', image));
             const res = await fetch('https://images.techrapid.in/color', {
                 method: 'POST',
-                body: JSON.stringify(color),
-                headers: {
-                    'Content-Type': 'application/json'
-                }
+                body
             });
             const { color: data } = await res.json();
             setColors([...colors, data]);
@@ -102,7 +104,12 @@ function images({ data }) {
                                             </GridItem>) : colors.map((color, index) => <GridItem colSpan={1} key={index} >
                                                 <Box borderRadius='lg' boxShadow={'md'} bg='white'>
                                                     <Box h={'50px'} bg={`#${color.code}`} roundedTop={'lg'} />
-                                                    {/* <Image src={`https://images.techrapid.in/image/${color?.image[0]}`} alt={color.name} objectFit='cover' h={'180px'} roundedTop={'lg'} /> */}
+                                                    <Grid templateColumns="repeat(2, 1fr)" gap={1} mt='1'>
+                                                        <Image src={`https://images.techrapid.in/image/${color.image[0]}?width=250`} w='100%' maxH='100px' objectFit='cover' />
+                                                        <Image src={`https://images.techrapid.in/image/${color.image[1]}?width=250`} w='100%' maxH='100px' objectFit='cover' />
+                                                        <Image src={`https://images.techrapid.in/image/${color.image[2]}?width=250`} roundedBottomLeft={'lg'} w='100%' maxH='100px' objectFit='cover' />
+                                                        <Image src={`https://images.techrapid.in/image/${color.image[3]}?width=250`} roundedBottomRight={'lg'} w='100%' maxH='100px' objectFit='cover' />
+                                                    </Grid>
                                                     <Box p='4'>
                                                         <Flex alignItems='center' gap='2' mt='2'>
                                                             <Text fontSize='xl' fontWeight='semibold'>{color.name}</Text>
