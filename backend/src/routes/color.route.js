@@ -39,7 +39,6 @@ app.get('/', async (req, res) => {
 app.post('/', upload.any('image'), async (req, res) => {
     const { name, code } = req.body;
     const files = req.files;
-    console.log(files);
     try {
         const image = files.map(file => {
             const { filename } = file;
@@ -49,7 +48,6 @@ app.post('/', upload.any('image'), async (req, res) => {
         await color.save();
         res.send({ success: true, color });
     } catch (error) {
-        console.log(error);
         res.send({ success: false, error });
     }
 });

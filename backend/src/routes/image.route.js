@@ -58,7 +58,6 @@ app.get('/', async (req, res) => {
         });
         res.send({ success: true, images });
     } catch (error) {
-        console.log(error);
         res.send({ success: false, error });
     }
 });
@@ -161,7 +160,6 @@ app.delete('/:id', async (req, res) => {
         fs.unlinkSync(path.join(__dirname, `../../image/${image?.image?.url}`));
         res.send({ success: true, image });
     } catch (error) {
-        console.log(error);
         res.send({ success: false, error });
     }
 });
