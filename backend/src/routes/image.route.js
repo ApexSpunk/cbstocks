@@ -62,6 +62,23 @@ app.get('/', async (req, res) => {
     }
 });
 
+app.get('/sitemap', async (req, res) => {
+    let { page, limit } = req.query;
+    page = parseInt(page) || 1;
+    limit = parseInt(limit) || 10;
+    const skip = (page - 1) * limit;
+    try {
+        const images = await Image.find({}).sort({ downloads: -1, likes: -1, views: -1 }).skip(skip).limit(limit).populate({ path: 'category', select: { name: 1, image: 1, likes: 1 } }).populate({ path: 'colors', select: { name: 1, code: 1 } }).populate({ path: 'tags', select: { name: 1 } });
+        images.map(image => {
+            image.image.url = `https://images.techrapid.in/image/${image.image.url}`;
+            return image;
+        });
+        res.send({ success: true, images });
+    } catch (error) {
+        res.send({ success: false, error });
+    }
+});
+
 app.post('/download/:id', async (req, res) => {
     const { id } = req.params;
     try {
