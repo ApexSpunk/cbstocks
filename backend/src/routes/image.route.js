@@ -69,13 +69,10 @@ app.get('/sitemap', async (req, res) => {
     const skip = (page - 1) * limit;
     try {
         const images = await Image.find().select('slug').skip(skip).limit(limit);
-        images.map(image => {
-            image.image.url = `https://images.techrapid.in/image/${image.image.url}`;
-            return image;
-        });
+       
         res.send({ success: true, images });
     } catch (error) {
-        res.send({ success: false, error: error.message });
+        res.send({ success: false, error });
     }
 });
 
