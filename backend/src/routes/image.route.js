@@ -68,7 +68,7 @@ app.get('/sitemap', async (req, res) => {
     limit = parseInt(limit) || 10;
     const skip = (page - 1) * limit;
     try {
-        const images = await Image.find({}).sort({ downloads: -1, likes: -1, views: -1 }).skip(skip).limit(limit).populate({ path: 'category', select: { name: 1, image: 1, likes: 1 } }).populate({ path: 'colors', select: { name: 1, code: 1 } }).populate({ path: 'tags', select: { name: 1 } });
+        const images = await Image.find({}).select({ slug: 1, updatedAt: 1 }).skip(skip).limit(limit);
         images.map(image => {
             image.image.url = `https://images.techrapid.in/image/${image.image.url}`;
             return image;
