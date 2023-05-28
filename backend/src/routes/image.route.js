@@ -68,7 +68,7 @@ app.get('/sitemap', async (req, res) => {
     limit = parseInt(limit) || 10;
     const skip = (page - 1) * limit;
     try {
-        const images = await Image.find().skip(skip).limit(limit)
+        const images = await Image.find().select('slug updatedAt').skip(skip).limit(limit);
         images.map(image => {
             image.image.url = `https://images.techrapid.in/image/${image.image.url}`;
             return image;
