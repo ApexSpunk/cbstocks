@@ -75,7 +75,7 @@ app.get('/sitemap', async (req, res) => {
         });
         res.send({ success: true, images });
     } catch (error) {
-        res.send({ success: false, error });
+        res.send({ success: false, error: error.message });
     }
 });
 
