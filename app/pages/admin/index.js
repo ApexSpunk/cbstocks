@@ -41,6 +41,7 @@ const LinkItems = [
     { name: 'Categories', icon: FiCompass, link: '/admin/categories' },
     { name: 'Colors', icon: FiStar, link: '/admin/colors' },
     { name: 'Tags', icon: FiTrendingUp, link: '/admin/tags' },
+    { name: 'Pages', icon: FiSettings, link: '/admin/pages' },
 ];
 
 export default function SidebarWithHeader({
