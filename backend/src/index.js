@@ -23,6 +23,7 @@ app.use('/category', categoryRoute);
 app.use('/images', imageRoute);
 app.use('/color', colorRoute);
 app.use('/tags', tagRoute);
+app.use('/page', pageRoute);
 
 app.get('/', (req, res) => {
     res.send({ message: 'Welcome to Techrapid' });
