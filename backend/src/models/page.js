@@ -8,6 +8,7 @@ const pageSchema = new mongoose.Schema({
     metaDescription: { type: String, required: true },
     metaKeywords: { type: String, required: true },
     status: { type: String, required: true, enum: ['active', 'inactive'], default: 'active' },
+    search: { type: String, required: true },
 }, { timestamps: true });
 
 const Page = mongoose.model('Page', pageSchema);
