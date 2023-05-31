@@ -1,7 +1,6 @@
 const express = require('express');
 const app = express.Router();
 const Page = require('../models/page');
-const Image = require('../models/image');
 
 app.get('/', async (req, res) => {
     try {
@@ -13,16 +12,13 @@ app.get('/', async (req, res) => {
 });
 
 app.get('/:id', async (req, res) => {
-const keywords = ['cb backgrounds', 'hd cb backgrounds', '4k cb backgrounds', 'new cb backgrounds', 'latest cb backgrounds', 'tech rapid cb backgrounds', 'neon cb backgrounds']
-await Image.updateMany({}, { $set: { keywords } });
-res.send({ success: true });
-    // const { id } = req.params;
-    // try {
-    //     const page = await Page.findOne({ slug: id })
-    //     res.send({ success: true, page });
-    // } catch (error) {
-    //     res.send({ success: false, error });
-    // }
+    const { id } = req.params;
+    try {
+        const page = await Page.findOne({ slug: id })
+        res.send({ success: true, page });
+    } catch (error) {
+        res.send({ success: false, error });
+    }
 });
 
 app.post('/', async (req, res) => {
