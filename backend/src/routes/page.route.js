@@ -11,6 +11,16 @@ app.get('/', async (req, res) => {
     }
 });
 
+app.get('/:id', async (req, res) => {
+    const { id } = req.params;
+    try {
+        const page = await Page.findOne({ slug: id });
+        res.send({ success: true, page });
+    } catch (error) {
+        res.send({ success: false, error });
+    }
+});
+
 app.post('/', async (req, res) => {
     const { title, slug, content, metaTitle, metaDescription, metaKeywords, status } = req.body;
     try {
