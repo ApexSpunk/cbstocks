@@ -7,6 +7,7 @@ const categoryRoute = require('./routes/category.route');
 const imageRoute = require('./routes/image.route');
 const colorRoute = require('./routes/color.route');
 const tagRoute = require('./routes/tags.route');
+const pageRoute = require('./routes/page.route');
 const sharp = require('sharp');
 const corsOptions = {
     origin: '*',
