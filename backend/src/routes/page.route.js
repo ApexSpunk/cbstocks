@@ -22,9 +22,9 @@ app.get('/:id', async (req, res) => {
 });
 
 app.post('/', async (req, res) => {
-    const { title, slug, content, metaTitle, metaDescription, metaKeywords, status } = req.body;
+    const { title, slug, content, metaTitle, metaDescription, metaKeywords, status, search } = req.body;
     try {
-        const page = await Page.create({ title, slug, content, metaTitle, metaDescription, metaKeywords, status });
+        const page = await Page.create({ title, slug, content, metaTitle, metaDescription, metaKeywords, status, search });
         res.send({ success: true, page });
     } catch (error) {
         res.send({ success: false, error });
@@ -34,9 +34,9 @@ app.post('/', async (req, res) => {
 
 app.patch('/:id', async (req, res) => {
     const { id } = req.params;
-    const { title, slug, content, metaTitle, metaDescription, metaKeywords, status } = req.body;
+    const { title, slug, content, metaTitle, metaDescription, metaKeywords, status, search } = req.body;
     try {
-        const page = await Page.findByIdAndUpdate(id, { title, slug, content, metaTitle, metaDescription, metaKeywords, status }, { new: true });
+        const page = await Page.findByIdAndUpdate(id, { title, slug, content, metaTitle, metaDescription, metaKeywords, status, search }, { new: true });
         res.send({ success: true, page });
     } catch (error) {
         res.send({ success: false, error });
