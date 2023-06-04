@@ -48,9 +48,18 @@ app.get('/', async (req, res) => {
         query.tags = { $in: [tag] };
     }
     if (search) {
-        // find search in title, description, tags, category, colors and altText also if keyword is present in document then only return that document also tags and category's has id of document so we need to populate them
-        query.$or = [{ title: { $regex: search, $options: 'i' } }, { description: { $regex: search, $options: 'i' } }, { tags: { $regex: search, $options: 'i' } }, { category: { $regex: search, $options: 'i' } }, { altText: { $regex: search, $options: 'i' } }, { keywords: { $regex: search, $options: 'i' } }];
+        query.$or = [
+            { title: { $regex: search, $options: 'i' } },
+            { description: { $regex: search, $options: 'i' } },
+            { 'image.url': { $regex: search, $options: 'i' } },
+            { 'category.name': { $regex: search, $options: 'i' } },
+            { 'tags.name': { $regex: search, $options: 'i' } },
+            { altText: { $regex: search, $options: 'i' } },
+            { slug: { $regex: search, $options: 'i' } },
+            { keywords: { $regex: search, $options: 'i' } },
+        ];
 
+        
     }
     try {
         const images = await Image.find(query).sort({ downloads: -1, likes: -1, views: -1 }).skip(skip).limit(limit).populate({ path: 'category', select: { name: 1, image: 1, likes: 1 } }).populate({ path: 'colors', select: { name: 1, code: 1 } }).populate({ path: 'tags', select: { name: 1 } });
@@ -71,7 +80,7 @@ app.get('/sitemap', async (req, res) => {
     const skip = (page - 1) * limit;
     try {
         const images = await Image.find().select('slug updatedAt').skip(skip).limit(limit);
-       
+
         res.send({ success: true, images });
     } catch (error) {
         res.send({ success: false, error });
