@@ -48,9 +48,9 @@ app.get('/', async (req, res) => {
         query.tags = { $in: [tag] };
     }
     if (search) {
-        const keywords = search.split(" ");
-        const regexQueries = keywords.map(keyword => ({ $regex: keyword, $options: 'i' }));
-        query.$or = regexQueries;
+        // find search in title, description, tags, category, colors and altText also if keyword is present in document then only return that document
+        query.$or = [ { title: { $regex: search, $options: 'i' } }, { description: { $regex: search, $options: 'i' } }, { tags: { $regex: search, $options: 'i' } }, { category: { $regex: search, $options: 'i' } }, { colors: { $regex: search, $options: 'i' } }, { altText: { $regex: search, $options: 'i' } }, { keywords: { $regex: search, $options: 'i' } } ];
+        
     }
     try {
         const images = await Image.find(query).sort({ downloads: -1, likes: -1, views: -1 }).skip(skip).limit(limit).populate({ path: 'category', select: { name: 1, image: 1, likes: 1 } }).populate({ path: 'colors', select: { name: 1, code: 1 } }).populate({ path: 'tags', select: { name: 1 } });
