@@ -49,7 +49,7 @@ app.get('/', async (req, res) => {
     }
     if (search) {
         // find search in title, description, tags, category, colors and altText also if keyword is present in document then only return that document also tags and category's has id of document so we need to populate them
-        query.$or = [{ title: { $regex: search, $options: 'i' } }, { description: { $regex: search, $options: 'i' } }, { tags: { $regex: search, $options: 'i' } }, { category: { $regex: search, $options: 'i' } }, { colors: { $regex: search, $options: 'i' } }, { altText: { $regex: search, $options: 'i' } }, { keywords: { $regex: search, $options: 'i' } }];
+        query.$or = [{ title: { $regex: search, $options: 'i' } }, { description: { $regex: search, $options: 'i' } }, { tags: { $regex: search, $options: 'i' } }, { category: { $regex: search, $options: 'i' } }, { altText: { $regex: search, $options: 'i' } }, { keywords: { $regex: search, $options: 'i' } }];
 
     }
     try {
