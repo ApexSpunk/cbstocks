@@ -9,6 +9,7 @@ const colorRoute = require('./routes/color.route');
 const tagRoute = require('./routes/tags.route');
 const pageRoute = require('./routes/page.route');
 const sharp = require('sharp');
+const path = require('path');
 const corsOptions = {
     origin: '*',
 };
@@ -52,7 +53,16 @@ app.get('/image/:image', async (req, res) => {
     }
 });
 
+const imageFolderPath = path.join(__dirname, 'image');
+const zipFilePath = path.join(imageFolderPath, 'temp.zip');
 
+app.get('/zip', (req, res) => {
+  res.download(zipFilePath, 'temp.zip', (err) => {
+    if (err) {
+      res.status(500).send('Error occurred while downloading the file.');
+    }
+  });
+});
 
 app.listen(PORT, () => {
     connect()
