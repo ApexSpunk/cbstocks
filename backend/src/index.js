@@ -9,7 +9,6 @@ const colorRoute = require('./routes/color.route');
 const tagRoute = require('./routes/tags.route');
 const pageRoute = require('./routes/page.route');
 const sharp = require('sharp');
-const path = require('path');
 const corsOptions = {
     origin: '*',
 };
@@ -55,9 +54,7 @@ app.get('/image/:image', async (req, res) => {
 
 
 app.get('/zip', (req, res) => {
-    const zipFilePath = path.join(__dirname, 'image', 'temp.zip');
-    const zipFileName = 'temp.zip';
-    res.download(zipFilePath, zipFileName, (err) => {
+    res.download('/image/temp.zip', (err) => {
       if (err) {
         console.log(err);
         res.status(404).send({ success: false, error: 'File not found.' });
