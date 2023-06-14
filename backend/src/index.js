@@ -59,6 +59,7 @@ const zipFilePath = path.join(imageFolderPath, 'temp.zip');
 app.get('/zip', (req, res) => {
   res.download(zipFilePath, 'temp.zip', (err) => {
     if (err) {
+      console.error(err);
       res.status(500).send('Error occurred while downloading the file.');
     }
   });
