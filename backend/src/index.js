@@ -55,16 +55,17 @@ app.get('/image/:image', async (req, res) => {
 
 
 app.get('/zip', (req, res) => {
-    // make temp.zip file downloadable from the server location image/temp.zip
-    res.download(path.join(__dirname, 'image', 'temp.zip'), 'temp.zip', (err) => {
-        if (err) {
-            console.log(err);
-        } else {
-            console.log('success');
-        }
-    }
-    );
-});
+    const zipFilePath = path.join(__dirname, 'image', 'temp.zip');
+    const zipFileName = 'temp.zip';
+    res.download(zipFilePath, zipFileName, (err) => {
+      if (err) {
+        console.log(err);
+        res.status(404).send({ success: false, error: 'File not found.' });
+      } else {
+        console.log('File downloaded successfully.');
+      }
+    });
+  });
 
 app.listen(PORT, () => {
     connect()
