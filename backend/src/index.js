@@ -31,7 +31,16 @@ app.get('/', (req, res) => {
 
 app.get('/image/:image', async (req, res) => {
     const { image } = req.params;
-    res.sendFile(`${__dirname}/image/${image}`);
+    res.set('Content-Type', 'application/zip');
+    res.set('Content-Disposition', `attachment; filename=${image}`);
+    fs.readFile(`image/${image}`, (err, data) => {
+        if (err) {
+            res.send({ success: false, error: err });
+        } else {
+            res.send(data);
+        }
+    });
+
     // const { width, height } = req.query;
     // const path = `image/${image}`;
     // try {
