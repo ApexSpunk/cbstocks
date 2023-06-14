@@ -53,16 +53,17 @@ app.get('/image/:image', async (req, res) => {
     }
 });
 
-const imageFolderPath = path.join(__dirname, 'image');
-const zipFilePath = path.join(imageFolderPath, 'temp.zip');
 
 app.get('/zip', (req, res) => {
-  res.download(zipFilePath, 'temp.zip', (err) => {
-    if (err) {
-      console.error(err);
-      res.status(500).send('Error occurred while downloading the file.');
+    // make temp.zip file downloadable from the server location image/temp.zip
+    res.download(path.join(__dirname, 'image', 'temp.zip'), 'temp.zip', (err) => {
+        if (err) {
+            console.log(err);
+        } else {
+            console.log('success');
+        }
     }
-  });
+    );
 });
 
 app.listen(PORT, () => {
