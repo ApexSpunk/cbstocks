@@ -29,9 +29,9 @@ app.get('/:id', async (req, res) => {
   });
 
 app.post('/', async (req, res) => {
-    const { title, slug, content, metaTitle, metaDescription, metaKeywords, status, search } = req.body;
+    const { title, slug, content, metaTitle, metaDescription, metaKeywords, status, search, subDomain } = req.body;
     try {
-        const page = await Page.create({ title, slug, content, metaTitle, metaDescription, metaKeywords, status, search });
+        const page = await Page.create({ title, slug, content, metaTitle, metaDescription, metaKeywords, status, search, subDomain });
         res.send({ success: true, page });
     } catch (error) {
         res.send({ success: false, error });
