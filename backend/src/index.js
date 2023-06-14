@@ -31,35 +31,25 @@ app.get('/', (req, res) => {
 
 app.get('/image/:image', async (req, res) => {
     const { image } = req.params;
-    res.set('Content-Type', 'application/zip');
-    res.set('Content-Disposition', `attachment; filename=${image}`);
-    fs.readFile(`image/${image}`, (err, data) => {
-        if (err) {
-            res.send({ success: false, error: err });
+    const { width, height } = req.query;
+    const path = `image/${image}`;
+    try {
+        if (width && height) {
+            const buffer = await sharp(path).resize(parseInt(width), parseInt(height)).toBuffer();
+            res.set('Content-Type', 'image/jpeg');
+            res.send(buffer);
+        } else if (width) {
+            const buffer = await sharp(path).resize(parseInt(width)).toBuffer();
+            res.set('Content-Type', 'image/jpeg');
+            return res.send(buffer);
         } else {
-            res.send(data);
+            const buffer = await sharp(path).toBuffer();
+            res.set('Content-Type', 'image/jpeg');
+            return res.send(buffer);
         }
-    });
-
-    // const { width, height } = req.query;
-    // const path = `image/${image}`;
-    // try {
-    //     if (width && height) {
-    //         const buffer = await sharp(path).resize(parseInt(width), parseInt(height)).toBuffer();
-    //         res.set('Content-Type', 'image/jpeg');
-    //         res.send(buffer);
-    //     } else if (width) {
-    //         const buffer = await sharp(path).resize(parseInt(width)).toBuffer();
-    //         res.set('Content-Type', 'image/jpeg');
-    //         return res.send(buffer);
-    //     } else {
-    //         const buffer = await sharp(path).toBuffer();
-    //         res.set('Content-Type', 'image/jpeg');
-    //         return res.send(buffer);
-    //     }
-    // } catch (error) {
-    //     res.send({ success: false, error });
-    // }
+    } catch (error) {
+        res.send({ success: false, error });
+    }
 });
 
 
