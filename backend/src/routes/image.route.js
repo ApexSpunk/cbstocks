@@ -116,7 +116,7 @@ app.post('/upload', upload.any('images'), async (req, res) => {
     let { title, description, uploadedBy, altText, category, tags, colors, keywords } = req.body;
     const files = req.files;
     if (keywords) {
-        var newTitle = title + ' ' + keywords[Math.floor(Math.random() * keywords.length)]
+        var newTitle = title + ' ' + keywords.split(',')[Math.floor(Math.random() * keywords.length)]
     } else {
         var newTitle = title
     }
