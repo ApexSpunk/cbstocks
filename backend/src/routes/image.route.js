@@ -130,7 +130,7 @@ app.post('/upload', upload.any('images'), async (req, res) => {
                 capitalization: 'lowercase',
             });
             const image = {
-                title,
+                title: newTitle,
                 description,
                 image: {
                     url: filename,
