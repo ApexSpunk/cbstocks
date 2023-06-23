@@ -8,7 +8,7 @@ import { DeleteIcon } from '@chakra-ui/icons'
 
 
 export async function getServerSideProps() {
-    const res = await fetch('https://images.techrapid.in/images?type=admin')
+    const res = await fetch('https://images.techrapid.in/images?limit=100')
     const cate = await fetch('https://images.techrapid.in/category')
     const tag = await fetch('https://images.techrapid.in/tags')
     const colo = await fetch('https://images.techrapid.in/color')
