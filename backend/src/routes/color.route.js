@@ -5,6 +5,7 @@ const multer = require('multer');
 const randomstring = require('randomstring');
 const slugify = require('slugify');
 const path = require('path');
+const middleware = require('../config/middleware');
 
 
 
@@ -36,7 +37,7 @@ app.get('/', async (req, res) => {
     }
 });
 
-app.post('/', upload.any('image'), async (req, res) => {
+app.post('/', middleware, upload.any('image'), async (req, res) => {
     const { name, code } = req.body;
     const files = req.files;
     try {
@@ -52,7 +53,7 @@ app.post('/', upload.any('image'), async (req, res) => {
     }
 });
 
-app.patch('/:id', async (req, res) => {
+app.patch('/:id', middleware, async (req, res) => {
     const { id } = req.params;
     const { name, code } = req.body;
     try {
@@ -63,7 +64,7 @@ app.patch('/:id', async (req, res) => {
     }
 });
 
-app.delete('/:id', async (req, res) => {
+app.delete('/:id', middleware, async (req, res) => {
     const { id } = req.params;
     try {
         const color = await Color.findByIdAndDelete(id);

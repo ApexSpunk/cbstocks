@@ -8,6 +8,7 @@ const imageRoute = require('./routes/image.route');
 const colorRoute = require('./routes/color.route');
 const tagRoute = require('./routes/tags.route');
 const pageRoute = require('./routes/page.route');
+const userRoute = require('./routes/user.route');
 const sharp = require('sharp');
 const corsOptions = {
     origin: '*',
@@ -24,6 +25,7 @@ app.use('/images', imageRoute);
 app.use('/color', colorRoute);
 app.use('/tags', tagRoute);
 app.use('/page', pageRoute);
+app.use('/user', userRoute);
 
 app.get('/', (req, res) => {
     res.send({ message: 'Welcome to Techrapid' });

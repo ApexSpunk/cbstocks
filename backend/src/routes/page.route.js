@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express.Router();
 const Page = require('../models/page');
+const middleware = require('../config/middleware');
 
 app.get('/', async (req, res) => {
     try {
@@ -28,7 +29,7 @@ app.get('/:id', async (req, res) => {
     }
   });
 
-app.post('/', async (req, res) => {
+app.post('/', middleware, async (req, res) => {
     const { title, slug, content, metaTitle, metaDescription, metaKeywords, status, search, subDomain } = req.body;
     try {
         const page = await Page.create({ title, slug, content, metaTitle, metaDescription, metaKeywords, status, search, subDomain });
@@ -39,7 +40,7 @@ app.post('/', async (req, res) => {
 });
 
 
-app.patch('/:id', async (req, res) => {
+app.patch('/:id', middleware, async (req, res) => {
     const { id } = req.params;
     const { title, slug, content, metaTitle, metaDescription, metaKeywords, status, search } = req.body;
     try {
@@ -50,7 +51,7 @@ app.patch('/:id', async (req, res) => {
     }
 });
 
-app.delete('/:id', async (req, res) => {
+app.delete('/:id', middleware, async (req, res) => {
     const { id } = req.params;
     try {
         const page = await Page.findByIdAndDelete(id);

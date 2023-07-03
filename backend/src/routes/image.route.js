@@ -11,6 +11,7 @@ const util = require('util');
 const unlinkFile = util.promisify(fs.unlink);
 const randomstring = require('randomstring');
 const { unlink } = require('fs').promises;
+const middleware = require('../config/middleware');
 
 const storage = multer.diskStorage({
     filename: function (req, file, cb) {
@@ -120,7 +121,7 @@ app.get('/:id', async (req, res) => {
     }
 });
 
-app.post('/upload', upload.any('images'), async (req, res) => {
+app.post('/upload', middleware, upload.any('images'), async (req, res) => {
     let { title, description, uploadedBy, altText, category, tags, colors, keywords } = req.body;
     const files = req.files;
     if (keywords) {
@@ -177,7 +178,7 @@ app.post('/like/:id', async (req, res) => {
 
 
 
-app.patch('/:id', async (req, res) => {
+app.patch('/:id', middleware, async (req, res) => {
     const { id } = req.params;
     const { name, category, tags, colors } = req.body;
     try {
@@ -188,7 +189,7 @@ app.patch('/:id', async (req, res) => {
     }
 });
 
-app.delete('/:id', async (req, res) => {
+app.delete('/:id', middleware, async (req, res) => {
     const { id } = req.params;
     try {
         const image = await Image.findByIdAndDelete(id);

@@ -5,6 +5,7 @@ const multer = require('multer');
 const randomstring = require('randomstring');
 const slugify = require('slugify');
 const path = require('path');
+const middleware = require('../config/middleware');
 
 
 const storage = multer.diskStorage({
@@ -35,7 +36,7 @@ app.get('/', async (req, res) => {
     }
 });
 
-app.post('/', upload.any('image'), async (req, res) => {
+app.post('/', middleware, upload.any('image'), async (req, res) => {
     const { name } = req.body;
     const files = req.files;
     try {
@@ -51,7 +52,7 @@ app.post('/', upload.any('image'), async (req, res) => {
 });
 
 
-app.patch('/:id', async (req, res) => {
+app.patch('/:id', middleware, async (req, res) => {
     const { id } = req.params;
     const { name, image } = req.body;
     try {
@@ -62,7 +63,7 @@ app.patch('/:id', async (req, res) => {
     }
 });
 
-app.delete('/:id', async (req, res) => {
+app.delete('/:id', middleware, async (req, res) => {
     const { id } = req.params;
     try {
         const category = await Category.findByIdAndDelete(id);

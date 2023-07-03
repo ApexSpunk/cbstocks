@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express.Router();
 const Tags = require('../models/tags');
+const middleware = require('../config/middleware');
 
 app.get('/', async (req, res) => {
     try {
@@ -11,7 +12,7 @@ app.get('/', async (req, res) => {
     }
 });
 
-app.post('/', async (req, res) => {
+app.post('/', middleware, async (req, res) => {
     const { name } = req.body;
     try {
         const tag = new Tags({ name });
@@ -22,7 +23,7 @@ app.post('/', async (req, res) => {
     }
 });
 
-app.delete('/:id', async (req, res) => {
+app.delete('/:id', middleware, async (req, res) => {
     const { id } = req.params;
     try {
         const tag = await Tags.findByIdAndDelete(id);
