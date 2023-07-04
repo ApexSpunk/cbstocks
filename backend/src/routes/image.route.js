@@ -12,7 +12,7 @@ const unlinkFile = util.promisify(fs.unlink);
 const randomstring = require('randomstring');
 const { unlink } = require('fs').promises;
 const middleware = require('../config/middleware');
-const Tag = require('../models/tag');
+const Tag = require('../models/tags');
 
 const storage = multer.diskStorage({
     filename: function (req, file, cb) {
@@ -53,6 +53,8 @@ app.get('/', async (req, res) => {
         const tag = await Tag.findOne({ name: tagname }); // Find the tag by name
         if (tag) {
             query.tags = { $in: [tag._id] }; // Use the tag ID in the query
+        } else {
+            res.send({ success: false, error: 'Tag not found' });
         }
     }
     if (search) {
