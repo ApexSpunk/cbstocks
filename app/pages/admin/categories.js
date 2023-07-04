@@ -25,6 +25,15 @@ function images({ data }) {
     const { isOpen, onOpen, onClose } = useDisclosure();
     const [query, setQuery] = React.useState('update');
     const toast = useToast();
+    var token = null;
+
+
+    if (typeof window !== "undefined") {
+        token = localStorage.getItem('token')
+        if (!token) {
+            window.location.href = '/'
+        }
+    }
 
     const [category, setCategory] = React.useState({ name: '', image: '' });
     const [categories, setCategories] = React.useState(data);
@@ -46,6 +55,9 @@ function images({ data }) {
         category.image.map(image => body.append('image', image));
         const res = await fetch('https://images.techrapid.in/category', {
             method: 'POST',
+            headers: {
+                token
+            },
             body
         });
         const { category: data } = await res.json();
@@ -114,7 +126,10 @@ function images({ data }) {
                                                                 <Button colorScheme={'red'} size='sm' onClick={() => {
                                                                     setLoading(true);
                                                                     fetch(`https://images.techrapid.in/category/${category._id}`, {
-                                                                        method: 'DELETE'
+                                                                        method: 'DELETE',
+                                                                        headers: {
+                                                                            token
+                                                                        }
                                                                     }).then(res => res.json()).then(data => {
                                                                         setCategories(categories.filter(el => el._id !== category._id));
                                                                         setLoading(false);

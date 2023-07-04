@@ -27,6 +27,15 @@ function images({ data }) {
     const { isOpen, onOpen, onClose } = useDisclosure();
     const [query, setQuery] = React.useState('update');
     const toast = useToast();
+    var token = null;
+
+
+    if (typeof window !== "undefined") {
+        token = localStorage.getItem('token')
+        if (!token) {
+            window.location.href = '/'
+        }
+    }
 
     const [color, setColor] = React.useState({ name: '', code: '', image: [] });
     const [colors, setColors] = React.useState(data);
@@ -51,6 +60,9 @@ function images({ data }) {
             color.image.map(image => body.append('image', image));
             const res = await fetch('https://images.techrapid.in/color', {
                 method: 'POST',
+                headers: {
+                    token
+                },
                 body
             });
             const { color: data } = await res.json();
@@ -123,7 +135,10 @@ function images({ data }) {
                                                                 <Button colorScheme={'red'} size='sm' onClick={() => {
                                                                     setLoading(true);
                                                                     fetch(`https://images.techrapid.in/color/${color._id}`, {
-                                                                        method: 'DELETE'
+                                                                        method: 'DELETE',
+                                                                        headers: {
+                                                                            token
+                                                                        }
                                                                     }).then(res => res.json()).then(data => {
                                                                         setColors(colors.filter(el => el._id !== color._id));
                                                                         setLoading(false);

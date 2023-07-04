@@ -8,7 +8,7 @@ import { DeleteIcon } from '@chakra-ui/icons'
 
 
 export async function getServerSideProps() {
-    const res = await fetch('https://images.techrapid.in/images?limit=100')
+    const res = await fetch('https://images.techrapid.in/images?limit=30')
     const cate = await fetch('https://images.techrapid.in/category')
     const tag = await fetch('https://images.techrapid.in/tags')
     const colo = await fetch('https://images.techrapid.in/color')
@@ -28,7 +28,17 @@ function images({ images, categories, tags, colors }) {
     const [data, setData] = React.useState(images);
     const { isOpen, onOpen, onClose } = useDisclosure();
     const [query, setQuery] = React.useState('update');
+    const [page, setPage] = React.useState(1);
     const toast = useToast();
+    var token = null;
+
+
+    if (typeof window !== "undefined") {
+        token = localStorage.getItem('token')
+        if (!token) {
+            window.location.href = '/'
+        }
+    }
 
 
     const [course, setCourse] = React.useState({ name: '', images: [], category: '', tags: [], colors: [], description: '', keywords: [] });
@@ -38,7 +48,8 @@ function images({ images, categories, tags, colors }) {
         const res = fetch(`https://images.techrapid.in/images/${id}`, {
             method: 'DELETE',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                token
             }
         })
         const { success } = await res.then(res => res.json())
@@ -64,13 +75,6 @@ function images({ images, categories, tags, colors }) {
         setData(data.filter(item => item._id !== id))
     }
 
-    const getImages = async () => {
-        setLoading(true)
-        const res = await fetch('https://images.techrapid.in/images')
-        const { images } = await res.json()
-        setData(images)
-        setLoading(false)
-    }
 
     const handleImages = (e) => {
         const files = e.target.files;
@@ -99,6 +103,9 @@ function images({ images, categories, tags, colors }) {
         body.append('description', course.description);
         const res = await fetch('https://images.techrapid.in/images/upload', {
             method: 'POST',
+            headers: {
+                token
+            },
             body
         })
         const { success, images: imgs } = await res.json()
@@ -121,8 +128,27 @@ function images({ images, categories, tags, colors }) {
             })
             setLoading(false)
         }
-        getImages()
+        setData([...data, ...imgs])
     }
+
+    const fetchByCategory = async (category) => {
+        setLoading(true)
+        const res = await fetch(`https://images.techrapid.in/images?category=${category}&limit=30`)
+        const { images } = await res.json()
+        setData(images)
+        setLoading(false)
+    }
+
+    const loadMore = async () => {
+        setLoading(true)
+        const res = await fetch(`https://images.techrapid.in/images?page=${page + 1}&limit=30`)
+        const { images } = await res.json()
+        setData([...data, ...images])
+        setPage(page + 1)
+        setLoading(false)
+    }
+
+
 
 
     return (
@@ -143,6 +169,11 @@ function images({ images, categories, tags, colors }) {
                                                 setQuery('add')
                                             }} colorScheme='blue' size='md' ml='auto'>Add Image</Button>
                                         </Flex>
+                                        <Select placeholder='Select Category' mt='4' onChange={(e) => fetchByCategory(e.target.value)}>
+                                            {
+                                                categories.map((category, index) => <option key={index} value={category._id}>{category.name}</option>)
+                                            }
+                                        </Select>
                                     </Box>
                                     <Grid templateColumns="repeat(3, 1fr)" gap={6} mt='4'>
                                         {
@@ -159,7 +190,9 @@ function images({ images, categories, tags, colors }) {
                                             </GridItem>) : data?.map((course, index) =>
                                                 <GridItem colSpan={1} key={index} >
                                                     <Box borderRadius='lg' boxShadow={'md'} bg='white'>
-                                                        <Image src={course.image.url} roundedTop={'lg'} h={'180px'} w='100%' objectFit='cover' />
+                                                        <a href={`https://techrapid.in//${course.slug}`} target='_blank'>
+                                                            <Image src={course.image.url + "?width=100"} roundedTop={'lg'} h={'180px'} w='100%' objectFit='cover' />
+                                                        </a>
                                                         <Box p='4'>
                                                             <Flex alignItems='center' justifyContent='space-between'>
                                                                 <Flex alignItems='center' gap='2'>
@@ -185,7 +218,7 @@ function images({ images, categories, tags, colors }) {
                                                             </Flex>
                                                             <Flex mt='4' alignItems='center' flexWrap='wrap' columnGap='2'>
                                                                 {
-                                                                    course.tags.slice(0,2).map((tag, index) => <Badge key={index} colorScheme='green' mb='2'>
+                                                                    course.tags.slice(0, 2).map((tag, index) => <Badge key={index} colorScheme='green' mb='2'>
                                                                         {tag.name}
                                                                     </Badge>)
                                                                 }
@@ -209,6 +242,9 @@ function images({ images, categories, tags, colors }) {
                                             )
                                         }
                                     </Grid>
+                                    <Box mt='4' mb='8'>
+                                        <Button colorScheme='blue' w='full' onClick={loadMore}>Load More</Button>
+                                    </Box>
                                 </Box>
                             </GridItem>
                         </Grid>

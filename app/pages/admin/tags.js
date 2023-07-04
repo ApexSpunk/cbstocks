@@ -25,6 +25,15 @@ function images({ data }) {
     const { isOpen, onOpen, onClose } = useDisclosure();
     const [query, setQuery] = React.useState('update');
     const toast = useToast();
+    var token = null;
+
+
+    if (typeof window !== "undefined") {
+        token = localStorage.getItem('token')
+        if (!token) {
+            window.location.href = '/'
+        }
+    }
 
     const [tag, setTag] = React.useState({ name: '' });
     const [tags, setTags] = React.useState(data);
@@ -36,7 +45,8 @@ function images({ data }) {
             const res = await fetch('https://images.techrapid.in/tags', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    token
                 },
                 body: JSON.stringify(tag)
             });
@@ -106,7 +116,11 @@ function images({ data }) {
                                                                 <Button onClick={() => {
                                                                     setLoading(true);
                                                                     fetch(`https://images.techrapid.in/tags/${tag._id}`, {
-                                                                        method: 'DELETE'
+                                                                        method: 'DELETE',
+                                                                        headers: {
+                                                                            'Content-Type': 'application/json',
+                                                                            token
+                                                                        }
                                                                     }).then(() => {
                                                                         setTags(tags.filter((item) => item._id !== tag._id));
                                                                         setLoading(false);

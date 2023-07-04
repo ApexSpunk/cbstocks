@@ -30,6 +30,15 @@ function pages({ data }) {
     const { isOpen, onOpen, onClose } = useDisclosure();
     const [query, setQuery] = useState('add');
     const toast = useToast();
+    var token = null;
+
+
+    if (typeof window !== "undefined") {
+        token = localStorage.getItem('token')
+        if (!token) {
+            window.location.href = '/'
+        }
+    }
     const [page, setPage] = useState({ title: '', slug: '', content: '', metaTitle: '', metaDescription: '', metaKeywords: '', status: '', search: '', subDomain: '' });
     const [pages, setPages] = useState(data);
 
@@ -40,6 +49,7 @@ function pages({ data }) {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'token': token
                 },
                 body: JSON.stringify(page),
             });
@@ -59,6 +69,35 @@ function pages({ data }) {
             console.log(error);
         }
     };
+
+    const updatePage = async () => {
+        setLoading(true);
+        try {
+            const res = await fetch(`https://images.techrapid.in/pages/${page._id}`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'token': token
+                },
+                body: JSON.stringify(page),
+            });
+            const { page: data } = await res.json();
+            setPages(pages.map((item) => (item._id === data._id ? data : item)));
+            setLoading(false);
+            onClose();
+            toast({
+                title: 'Page updated.',
+                description: "We've updated the page for you.",
+                status: 'success',
+                duration: 3000,
+                isClosable: true,
+            });
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+
 
 
     return (
@@ -108,9 +147,18 @@ function pages({ data }) {
                                                             <Td>{page?.title}</Td>
                                                             <Td>
                                                                 <Button onClick={() => {
+                                                                    onOpen();
+                                                                    setPage(page);
+                                                                    setQuery('update');
+                                                                }} colorScheme="blue" size="sm" float="right" ml="2"><FaEdit /></Button>
+                                                                <Button onClick={() => {
                                                                     setLoading(true);
                                                                     fetch(`https://images.techrapid.in/pages/${page._id}`, {
                                                                         method: 'DELETE',
+                                                                        headers: {
+                                                                            'Content-Type': 'application/json',
+                                                                            'token': token
+                                                                        },
                                                                     }).then(() => {
                                                                         setPages(pages.filter((item) => item._id !== page._id));
                                                                         setLoading(false);
@@ -196,7 +244,7 @@ function pages({ data }) {
                             <Button colorScheme="blue" mr={3} onClick={onClose}>
                                 Close
                             </Button>
-                            <Button colorScheme="green" onClick={query === 'add' ? addPage : null}>
+                            <Button colorScheme="green" onClick={query === 'add' ? addPage : updatePage}>
                                 {query === 'add' ? 'Add' : 'Update'}
                             </Button>
                         </ModalFooter>
