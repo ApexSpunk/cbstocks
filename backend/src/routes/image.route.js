@@ -49,7 +49,7 @@ app.get('/', async (req, res) => {
         query.tags = { $in: [tag] };
     }
     if (tagname) {
-        query['tags.name'] = { $regex: tagname, $options: 'i'}
+        query['tags.name'] = 'lockscreen wallpaper'
     }
     if (search) {
         query.$or = [
