@@ -49,7 +49,7 @@ app.get('/', async (req, res) => {
         query.tags = { $in: [tag] };
     }
     if (tagname) {
-        query.$or = [{ tags: { $in: [tagname] } }];
+        query['tags.name'] = tagname;
     }
     if (search) {
         query.$or = [
