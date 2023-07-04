@@ -34,7 +34,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage, limits: { fileSize: 50 * 1024 * 1024, fieldSize: 100 * 1024 * 1024 } });
 
 app.get('/', async (req, res) => {
-    let { page, limit, category, color, tag, search, type } = req.query;
+    let { page, limit, category, color, tag, search, type, tagname } = req.query;
     page = parseInt(page) || 1;
     limit = parseInt(limit) || 10;
     const skip = (page - 1) * limit;
@@ -48,6 +48,9 @@ app.get('/', async (req, res) => {
     if (tag) {
         query.tags = { $in: [tag] };
     }
+    if (tagname) {
+        query.$or = [{ tags: { $in: [tagname] } }];
+    }
     if (search) {
         query.$or = [
             { title: { $regex: search, $options: 'i' } },
@@ -60,9 +63,9 @@ app.get('/', async (req, res) => {
             { keywords: { $regex: search, $options: 'i' } },
         ];
 
-        
+
     }
-    if(type === 'admin'){
+    if (type === 'admin') {
         const images = await Image.find()
         images.map(image => {
             image.image.url = `https://images.techrapid.in/image/${image.image.url}`;
