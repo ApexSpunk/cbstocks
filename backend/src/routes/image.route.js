@@ -13,6 +13,8 @@ const randomstring = require('randomstring');
 const { unlink } = require('fs').promises;
 const middleware = require('../config/middleware');
 const Tag = require('../models/tags');
+const Category = require('../models/category');
+
 
 const storage = multer.diskStorage({
     filename: function (req, file, cb) {
@@ -55,6 +57,7 @@ app.get('/', async (req, res) => {
             query.tags = { $in: [tag._id] }; // Use the tag ID in the query
         } else {
             res.send({ success: false, error: 'Tag not found' });
+            return;
         }
     }
     if (search) {
