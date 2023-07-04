@@ -73,7 +73,7 @@ function pages({ data }) {
     const updatePage = async () => {
         setLoading(true);
         try {
-            const res = await fetch(`https://images.techrapid.in/pages/${page._id}`, {
+            const res = await fetch(`https://images.techrapid.in/page/${page._id}`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
