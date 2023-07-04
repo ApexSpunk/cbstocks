@@ -41,17 +41,18 @@ app.get('/', async (req, res) => {
     limit = parseInt(limit) || 10;
     const skip = (page - 1) * limit;
     const query = {};
+
     if (category) {
-        query.category = category;
+        query.category = { name: { $regex: category, $options: 'i' } };
     }
     if (color) {
         query.colors = { $in: [color] };
     }
     if (tag) {
-        query.tags = { $in: [tag] };
+        query['tags.name'] = { $regex: tag, $options: 'i' };
     }
     if (tagname) {
-        query['tags.name'] = { $regex: tagname, $options: 'i'}
+        query['tags.name'] = { $regex: tagname, $options: 'i' };
     }
     if (search) {
         query.$or = [
@@ -64,9 +65,10 @@ app.get('/', async (req, res) => {
             { slug: { $regex: search, $options: 'i' } },
             { keywords: { $regex: search, $options: 'i' } },
         ];
-
-
     }
+
+
+
     if (type === 'admin') {
         const images = await Image.find()
         images.map(image => {
