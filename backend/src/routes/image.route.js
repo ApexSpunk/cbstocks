@@ -53,14 +53,14 @@ app.get('/', async (req, res) => {
     }
     if (search) {
         query.$or = [
-            { title: { $regex: search, $options: 'i' } },
-            { description: { $regex: search, $options: 'i' } },
-            { 'image.url': { $regex: search, $options: 'i' } },
-            { 'category.name': { $regex: search, $options: 'i' } },
+            // { title: { $regex: search, $options: 'i' } },
+            // { description: { $regex: search, $options: 'i' } },
+            // { 'image.url': { $regex: search, $options: 'i' } },
+            // { 'category.name': { $regex: search, $options: 'i' } },
             { 'tags.name': { $regex: search, $options: 'i' } },
-            { altText: { $regex: search, $options: 'i' } },
-            { slug: { $regex: search, $options: 'i' } },
-            { keywords: { $regex: search, $options: 'i' } },
+            // { altText: { $regex: search, $options: 'i' } },
+            // { slug: { $regex: search, $options: 'i' } },
+            // { keywords: { $regex: search, $options: 'i' } },
         ];
 
 
