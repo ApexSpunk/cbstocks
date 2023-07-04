@@ -53,7 +53,6 @@ function pages({ data }) {
                 },
                 body: JSON.stringify(page),
             });
-            console.log(res);
             const { page: data } = await res.json();
             setPages([...pages, data]);
             setLoading(false);
