@@ -12,8 +12,7 @@ const unlinkFile = util.promisify(fs.unlink);
 const randomstring = require('randomstring');
 const { unlink } = require('fs').promises;
 const middleware = require('../config/middleware');
-const Tag = require('../models/tags');
-const Category = require('../models/category');
+const Tag = require('../models/tag');
 
 const storage = multer.diskStorage({
     filename: function (req, file, cb) {
@@ -41,34 +40,33 @@ app.get('/', async (req, res) => {
     limit = parseInt(limit) || 10;
     const skip = (page - 1) * limit;
     const query = {};
-
     if (category) {
-        query.category = { name: { $regex: category, $options: 'i' } };
+        query.category = category;
     }
     if (color) {
         query.colors = { $in: [color] };
     }
     if (tag) {
-        query['tags.name'] = { $regex: tag, $options: 'i' };
+        query.tags = { $in: [tag] };
     }
     if (tagname) {
-        query['tags.name'] = { $regex: tagname, $options: 'i' };
+        const tag = await Tag.findOne({ name: tagname }); // Find the tag by name
+        if (tag) {
+            query.tags = { $in: [tag._id] }; // Use the tag ID in the query
+        }
     }
     if (search) {
         query.$or = [
             { title: { $regex: search, $options: 'i' } },
             { description: { $regex: search, $options: 'i' } },
             { 'image.url': { $regex: search, $options: 'i' } },
-            { 'category.name': { $regex: search, $options: 'i' } },
-            { 'tags.name': { $regex: search, $options: 'i' } },
             { altText: { $regex: search, $options: 'i' } },
             { slug: { $regex: search, $options: 'i' } },
             { keywords: { $regex: search, $options: 'i' } },
         ];
+
+
     }
-
-
-
     if (type === 'admin') {
         const images = await Image.find()
         images.map(image => {
