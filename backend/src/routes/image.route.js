@@ -12,6 +12,8 @@ const unlinkFile = util.promisify(fs.unlink);
 const randomstring = require('randomstring');
 const { unlink } = require('fs').promises;
 const middleware = require('../config/middleware');
+const Tag = require('../models/tags');
+const Category = require('../models/category');
 
 const storage = multer.diskStorage({
     filename: function (req, file, cb) {
@@ -49,18 +51,18 @@ app.get('/', async (req, res) => {
         query.tags = { $in: [tag] };
     }
     if (tagname) {
-        query['tags.name'] = 'lockscreen wallpaper'
+        query['tags.name'] = { $regex: tagname, $options: 'i'}
     }
     if (search) {
         query.$or = [
-            // { title: { $regex: search, $options: 'i' } },
-            // { description: { $regex: search, $options: 'i' } },
-            // { 'image.url': { $regex: search, $options: 'i' } },
+            { title: { $regex: search, $options: 'i' } },
+            { description: { $regex: search, $options: 'i' } },
+            { 'image.url': { $regex: search, $options: 'i' } },
             { 'category.name': { $regex: search, $options: 'i' } },
-            // { 'tags.name': { $regex: search, $options: 'i' } },
-            // { altText: { $regex: search, $options: 'i' } },
-            // { slug: { $regex: search, $options: 'i' } },
-            // { keywords: { $regex: search, $options: 'i' } },
+            { 'tags.name': { $regex: search, $options: 'i' } },
+            { altText: { $regex: search, $options: 'i' } },
+            { slug: { $regex: search, $options: 'i' } },
+            { keywords: { $regex: search, $options: 'i' } },
         ];
 
 
