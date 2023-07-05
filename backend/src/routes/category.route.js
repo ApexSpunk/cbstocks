@@ -46,6 +46,10 @@ app.get('/:slug', async (req, res) => {
         const category = await Category.findOne({ slug });
         if (!category) return res.send({ success: false, message: 'Category not found' });
         const images = await Image.find({ category: category._id }).skip((page - 1) * limit).limit(limit);
+        images.map(image => {
+            image.image.url = `https://images.techrapid.in/image/${image.image.url}`;
+            return image;
+        });
         res.send({ success: true, images });
     } catch (error) {
         res.send({ success: false, error });
