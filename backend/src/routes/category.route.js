@@ -36,6 +36,17 @@ app.get('/', async (req, res) => {
     }
 });
 
+app.get('/:slug', async (req, res) => {
+    const { slug } = req.params;
+    try {
+        const category = await Category.findOne({ slug });
+        if (!category) return res.send({ success: false, message: 'Category not found' });
+        res.send({ success: true, category });
+    } catch (error) {
+        res.send({ success: false, error });
+    }
+});
+
 app.post('/', middleware, upload.any('image'), async (req, res) => {
     const { name } = req.body;
     const files = req.files;
@@ -54,9 +65,9 @@ app.post('/', middleware, upload.any('image'), async (req, res) => {
 
 app.patch('/:id', middleware, async (req, res) => {
     const { id } = req.params;
-    const { name, image } = req.body;
+    const { name, image, slug } = req.body;
     try {
-        const category = await Category.findByIdAndUpdate(id, { name, image }, { new: true });
+        const category = await Category.findByIdAndUpdate(id, { name, image, slug }, { new: true });
         res.send({ success: true, category });
     } catch (error) {
         res.send({ success: false, error });

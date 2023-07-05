@@ -35,7 +35,7 @@ function images({ data }) {
         }
     }
 
-    const [category, setCategory] = React.useState({ name: '', image: '' });
+    const [category, setCategory] = React.useState({ name: '', image: '', slug: '' });
     const [categories, setCategories] = React.useState(data);
 
     const handleImages = (e) => {
@@ -52,6 +52,7 @@ function images({ data }) {
         setLoading(true);
         const body = new FormData();
         body.append('name', category.name);
+        body.append('slug', category.slug);
         category.image.map(image => body.append('image', image));
         const res = await fetch('https://images.techrapid.in/category', {
             method: 'POST',
@@ -88,7 +89,7 @@ function images({ data }) {
                                             <Text fontSize='2xl' fontWeight='semibold'>Manage Categories</Text>
                                             <Button onClick={() => {
                                                 onOpen();
-                                                setCategory({ name: '', image: '' });
+                                                setCategory({ name: '', image: '', slug: '' });
                                                 setQuery('add')
                                             }} colorScheme='blue' size='md' ml='auto'>Add Category</Button>
                                         </Flex>
@@ -165,6 +166,10 @@ function images({ data }) {
                             <InputGroup>
                                 <InputLeftElement pointerEvents='none' children={<FaAdjust />} />
                                 <Input type='text' placeholder='Category Name' value={category.name} onChange={(e) => setCategory({ ...category, name: e.target.value })} />
+                            </InputGroup>
+                            <InputGroup mt='4'>
+                                <InputLeftElement pointerEvents='none' children={<FaAdjust />} />
+                                <Input type='text' placeholder='Category Slug' value={category.slug} onChange={(e) => setCategory({ ...category, slug: e.target.value })} />
                             </InputGroup>
                             <InputGroup mt='4'>
                                 <InputLeftElement pointerEvents='none' children={<FaImage />} />
