@@ -6,6 +6,7 @@ const randomstring = require('randomstring');
 const slugify = require('slugify');
 const path = require('path');
 const middleware = require('../config/middleware');
+const Image = require('../models/image');
 
 
 const storage = multer.diskStorage({
@@ -41,7 +42,8 @@ app.get('/:slug', async (req, res) => {
     try {
         const category = await Category.findOne({ slug });
         if (!category) return res.send({ success: false, message: 'Category not found' });
-        res.send({ success: true, category });
+        const images = await Image.find({ category: category._id });
+        res.send({ success: true, category, images });
     } catch (error) {
         res.send({ success: false, error });
     }
