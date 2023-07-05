@@ -120,7 +120,7 @@ app.post('/download/:id', async (req, res) => {
 app.get('/:id', async (req, res) => {
     const { id } = req.params;
     try {
-        const image = await Image.findOne({ slug: id }).populate({ path: 'category', select: { name: 1, image: 1, likes: 1 } }).populate({ path: 'colors', select: { name: 1, code: 1 } }).populate({ path: 'tags', select: { name: 1 } });
+        const image = await Image.findOne({ slug: id }).populate({ path: 'category', select: { name: 1, image: 1, likes: 1, slug: 1 } }).populate({ path: 'colors', select: { name: 1, code: 1 } }).populate({ path: 'tags', select: { name: 1 } });
         image.views = image.views + 1;
         image.updatedAt = Date.now();
         await image.save();
@@ -179,7 +179,7 @@ app.post('/upload', middleware, upload.any('images'), async (req, res) => {
 app.post('/like/:id', async (req, res) => {
     const { id } = req.params;
     try {
-        const image = await Image.findByIdAndUpdate(id, { $inc: { likes: 1 } }, { new: true }).populate({ path: 'category', select: { name: 1, image: 1, likes: 1 } }).populate({ path: 'colors', select: { name: 1, code: 1 } }).populate({ path: 'tags', select: { name: 1 } });
+        const image = await Image.findByIdAndUpdate(id, { $inc: { likes: 1 } }, { new: true }).populate({ path: 'category', select: { name: 1, image: 1, likes: 1, slug: 1 } }).populate({ path: 'colors', select: { name: 1, code: 1 } }).populate({ path: 'tags', select: { name: 1 } });
         res.send({ success: true, image });
     } catch (error) {
         res.send({ success: false, error });
@@ -192,7 +192,7 @@ app.patch('/:id', middleware, async (req, res) => {
     const { id } = req.params;
     const { name, category, tags, colors } = req.body;
     try {
-        const image = await Image.findByIdAndUpdate(id, { name, category, tags, colors }, { new: true }).populate({ path: 'category', select: { name: 1, image: 1, likes: 1 } }).populate({ path: 'colors', select: { name: 1, code: 1 } }).populate({ path: 'tags', select: { name: 1 } });
+        const image = await Image.findByIdAndUpdate(id, { name, category, tags, colors }, { new: true }).populate({ path: 'category', select: { name: 1, image: 1, likes: 1, slug: 1 } }).populate({ path: 'colors', select: { name: 1, code: 1 } }).populate({ path: 'tags', select: { name: 1 } });
         res.send({ success: true, image });
     } catch (error) {
         res.send({ success: false, error });
