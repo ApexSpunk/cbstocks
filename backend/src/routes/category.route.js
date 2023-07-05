@@ -39,11 +39,14 @@ app.get('/', async (req, res) => {
 
 app.get('/:slug', async (req, res) => {
     const { slug } = req.params;
+    let { page, limit } = req.query;
+    if (!page) page = 1;
+    if (!limit) limit = 60;
     try {
         const category = await Category.findOne({ slug });
         if (!category) return res.send({ success: false, message: 'Category not found' });
-        const images = await Image.find({ category: category._id });
-        res.send({ success: true, category, images });
+        const images = await Image.find({ category: category._id }).skip((page - 1) * limit).limit(limit);
+        res.send({ success: true, images });
     } catch (error) {
         res.send({ success: false, error });
     }
