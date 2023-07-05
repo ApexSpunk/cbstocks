@@ -81,7 +81,7 @@ app.get('/', async (req, res) => {
         res.send({ success: true, images });
     }
     try {
-        const images = await Image.find(query).sort({ downloads: -1, likes: -1, views: -1 }).skip(skip).limit(limit).populate({ path: 'category', select: { name: 1, image: 1, likes: 1 } }).populate({ path: 'colors', select: { name: 1, code: 1 } }).populate({ path: 'tags', select: { name: 1 } });
+        const images = await Image.find(query).sort({ downloads: -1, likes: -1, views: -1 }).skip(skip).limit(limit).populate({ path: 'category', select: { name: 1, image: 1, likes: 1, slug: 1 } }).populate({ path: 'colors', select: { name: 1, code: 1 } }).populate({ path: 'tags', select: { name: 1 } });
         images.map(image => {
             image.image.url = `https://images.techrapid.in/image/${image.image.url}`;
             return image;
